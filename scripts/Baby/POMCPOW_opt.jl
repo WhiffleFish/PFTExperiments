@@ -1,19 +1,6 @@
 using Distributed
-using Hyperopt
-using FileIO
-worker_ids = addprocs(10)
 
-@everywhere begin
-    using Pkg
-    Pkg.activate("../../")
-    Pkg.instantiate()
-    using POMDPs
-    using POMDPModels
-    using BeliefUpdaters
-    using ParticleFilters
-    using POMDPSimulators
-    using POMCPOW
-end
+worker_ids = addprocs(10; exeflags="--project")
 
 include("../../src/evaluate.jl")
 
