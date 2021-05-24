@@ -1,3 +1,6 @@
+using Distributed
+worker_ids = add_procs(10)
+
 include("../../src/evaluate.jl")
 
 search_iter = 100
