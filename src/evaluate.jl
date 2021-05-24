@@ -3,7 +3,7 @@ using FileIO
 
 @everywhere begin
     using Pkg
-    Pkg.activate("../../")
+    Pkg.activate(".")
     Pkg.instantiate()
     using POMDPs
     using POMDPModels

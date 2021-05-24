@@ -4,11 +4,11 @@ worker_ids = addprocs(10; exeflags="--project")
 
 include("../../src/evaluate.jl")
 
-search_iter = 10
+search_iter = 500
 
 pomdp = BabyPOMDP()
 bu = BootstrapFilter(pomdp, 1_000)
-params = OptParams(POMCPOWSolver, pomdp, 100, bu, 20)
+params = OptParams(POMCPOWSolver, pomdp, 500, bu, 20)
 
 ho = @hyperopt for i=search_iter,
         sampler = GPSampler(Max),
