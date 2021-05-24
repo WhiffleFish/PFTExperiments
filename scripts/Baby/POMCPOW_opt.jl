@@ -26,4 +26,4 @@ ho = @hyperopt for i=search_iter,
 end
 rmprocs(worker_ids)
 
-save("data/POMCPOW_params.jld2", Dict("ho"=>ho))
+save("scripts/Baby/data/POMCPOW_params.jld2", Dict("ho"=>ho))
