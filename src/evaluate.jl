@@ -1,7 +1,3 @@
-using Distributed
-using Hyperopt
-using FileIO
-
 @everywhere begin
     using Pkg
     Pkg.activate(".")
