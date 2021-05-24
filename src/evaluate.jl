@@ -1,15 +1,3 @@
-@everywhere begin
-    using Pkg
-    Pkg.activate(".")
-    Pkg.instantiate()
-    using POMDPs
-    using POMDPModels
-    using BeliefUpdaters
-    using ParticleFilters
-    using POMDPSimulators
-    using POMCPOW
-end
-
 struct OptParams{T<:Solver}
     sol_t::Type{T}
     pomdp::POMDP

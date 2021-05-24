@@ -3,6 +3,18 @@ using Hyperopt
 using FileIO
 worker_ids = addprocs(10)
 
+@everywhere begin
+    using Pkg
+    Pkg.activate("../../")
+    Pkg.instantiate()
+    using POMDPs
+    using POMDPModels
+    using BeliefUpdaters
+    using ParticleFilters
+    using POMDPSimulators
+    using POMCPOW
+end
+
 include("../../src/evaluate.jl")
 
 search_iter = 10
