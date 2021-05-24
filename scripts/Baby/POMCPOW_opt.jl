@@ -1,4 +1,4 @@
-include("src/evaluate.jl")
+include("../../src/evaluate.jl")
 
 search_iter = 100
 
@@ -14,9 +14,11 @@ ho = @hyperopt for i=1:search_iter,
     println("($i/$search_iter) \t c=$c")
     @show evaluate(params;
         criterion=MaxUCB(c),
-        max_time=0.10, 
+        max_time=0.10,
         k_observation=k_obs,
         alpha_obsvation=1/inv_alpha_obs
         enable_action_pw=false
     )
 end
+
+save("data/POMCPOW_params.jld2", Dict("ho"=>ho))
