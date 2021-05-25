@@ -22,6 +22,7 @@ ho = @hyperopt for i=search_iter,
         max_time=0.10,
         k_observation=k_obs,
         alpha_observation=1/inv_alpha_obs,
+        tree_queries=100_000,
         enable_action_pw=false
     )
 end

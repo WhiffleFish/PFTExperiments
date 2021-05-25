@@ -722,7 +722,7 @@ version = "0.10.1"
 
 [[PFTDPW]]
 deps = ["BeliefUpdaters", "BenchmarkTools", "CSV", "D3Trees", "POMDPModelTools", "POMDPModels", "POMDPPolicies", "POMDPSimulators", "POMDPs", "Parameters", "ParticleFilters", "ProgressMeter", "Random"]
-git-tree-sha1 = "0a0ecf089fe88f351dd5c256b74d7375dabaec0a"
+git-tree-sha1 = "d2d519e07d26a82a0ad48e2a1c0c18e11b4baa5b"
 repo-rev = "main"
 repo-url = "https://github.com/WhiffleFish/PFT-DPW.jl"
 uuid = "4e818e2d-9c2f-4c72-90ef-e40b8c35c855"

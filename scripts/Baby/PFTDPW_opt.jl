@@ -1,6 +1,5 @@
 using Distributed
 using Hyperopt
-using FileIO
 
 worker_ids = addprocs(10; exeflags="--project")
 

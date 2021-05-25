@@ -32,7 +32,3 @@ N = 100
 
 BB = BatchBenchmark(pomdp, policies, max_steps, N, times)
 benchmark!(BB)
-
-df = DataFrame(BB)
-
-CSV.write("sum_experiments.csv", df)
