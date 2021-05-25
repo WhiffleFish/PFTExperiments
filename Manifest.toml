@@ -504,15 +504,15 @@ version = "3.2.2+0"
 
 [[Libgcrypt_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Libgpg_error_jll", "Pkg"]
-git-tree-sha1 = "b391a18ab1170a2e568f9fb8d83bc7c780cb9999"
+git-tree-sha1 = "64613c82a59c120435c067c2b809fc61cf5166ae"
 uuid = "d4300ac3-e22c-5743-9152-c294e39db1e4"
-version = "1.8.5+4"
+version = "1.8.7+0"
 
 [[Libgpg_error_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
-git-tree-sha1 = "ec7f2e8ad5c9fa99fc773376cdbc86d9a5a23cb7"
+git-tree-sha1 = "c333716e46366857753e273ce6a69ee0945a6db9"
 uuid = "7add5ba3-2f88-524e-9cd5-f83b8a55f7b8"
-version = "1.36.0+3"
+version = "1.42.0+0"
 
 [[Libiconv_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -720,6 +720,14 @@ git-tree-sha1 = "95a4038d1011dfdbde7cecd2ad0ac411e53ab1bc"
 uuid = "90014a1f-27ba-587c-ab20-58faa44d9150"
 version = "0.10.1"
 
+[[PFTDPW]]
+deps = ["BeliefUpdaters", "BenchmarkTools", "CSV", "D3Trees", "POMDPModelTools", "POMDPModels", "POMDPPolicies", "POMDPSimulators", "POMDPs", "Parameters", "ParticleFilters", "ProgressMeter", "Random"]
+git-tree-sha1 = "e491b29a65370432373e9bb7d5e241fbbb88f9e6"
+repo-rev = "main"
+repo-url = "https://github.com/WhiffleFish/PFT-DPW.jl"
+uuid = "4e818e2d-9c2f-4c72-90ef-e40b8c35c855"
+version = "0.1.0"
+
 [[POMCPOW]]
 deps = ["BasicPOMCP", "CPUTime", "Colors", "D3Trees", "MCTS", "POMDPModelTools", "POMDPPolicies", "POMDPs", "Parameters", "ParticleFilters", "Printf", "Random"]
 git-tree-sha1 = "5069fdbda2ad54c7e29d8c356535d62eb6afeb23"
@@ -893,9 +901,9 @@ version = "0.5.0"
 
 [[SentinelArrays]]
 deps = ["Dates", "Random"]
-git-tree-sha1 = "6ccde405cf0759eba835eb613130723cb8f10ff9"
+git-tree-sha1 = "2ce5f07bbc1be0a1b5d5c0e281441d3bf8a7a2e5"
 uuid = "91c51154-3ec4-41a3-a24f-3f23e20d615c"
-version = "1.2.16"
+version = "1.3.0"
 
 [[Serialization]]
 uuid = "9e88b42a-f829-5b0c-bbe9-9e923198166b"
@@ -1062,10 +1070,10 @@ uuid = "02c8fc9c-b97f-50b9-bbe4-9be30ff0a78a"
 version = "2.9.12+0"
 
 [[XSLT_jll]]
-deps = ["Artifacts", "JLLWrappers", "Libdl", "Libgcrypt_jll", "Libgpg_error_jll", "Pkg", "XML2_jll"]
-git-tree-sha1 = "2b3eac39df218762d2d005702d601cd44c997497"
+deps = ["Artifacts", "JLLWrappers", "Libdl", "Libgcrypt_jll", "Libgpg_error_jll", "Libiconv_jll", "Pkg", "XML2_jll", "Zlib_jll"]
+git-tree-sha1 = "91844873c4085240b95e795f692c4cec4d805f8a"
 uuid = "aed1982a-8fda-507f-9586-7b0439959a61"
-version = "1.1.33+4"
+version = "1.1.34+0"
 
 [[Xorg_libX11_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg", "Xorg_libxcb_jll", "Xorg_xtrans_jll"]

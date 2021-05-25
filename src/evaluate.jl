@@ -10,7 +10,6 @@ using FileIO
     using BeliefUpdaters
     using ParticleFilters
     using POMDPSimulators
-    using POMCPOW
 end
 
 struct OptParams{T<:Solver}
