@@ -1,10 +1,10 @@
-using LaserTag
 using Distributed
 
 worker_ids = addprocs(10; exeflags="--project")
 
 include("../../src/evaluate.jl")
 @everywhere using POMCPOW
+@everywhere using LaserTag
 
 search_iter = 200
 
