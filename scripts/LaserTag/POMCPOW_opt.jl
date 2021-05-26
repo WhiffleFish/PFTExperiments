@@ -19,7 +19,7 @@ ho = @hyperopt for i=search_iter,
         inv_alpha_obs = Float64.(10:40),
         k_act = Float64.(2:10),
         inv_alpha_act = Float64.(10:40),
-        max_depth = 10:100
+        max_depth = Float64.(10:100)
     println("($i/$search_iter) \t c=$c \t k_obs=$k_obs \t k_act=$k_act")
     @show evaluate(params;
         criterion=MaxUCB(c),
@@ -29,7 +29,7 @@ ho = @hyperopt for i=search_iter,
         k_action=k_act,
         alpha_action=1/inv_alpha_act,
         tree_queries=100_000,
-        max_depth = max_depth
+        max_depth = Int(max_depth)
     )
 end
 

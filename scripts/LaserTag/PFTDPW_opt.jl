@@ -21,7 +21,7 @@ ho = @hyperopt for i=search_iter,
         inv_alpha_obs = Float64.(10:40),
         k_act = Float64.(2:10),
         inv_alpha_act = Float64.(10:40),
-        max_depth = 10:100
+        max_depth = Float64.(10:100)
     println("($i/$search_iter) \t c=$c")
     @show evaluate(params;
         c=c,
@@ -31,7 +31,7 @@ ho = @hyperopt for i=search_iter,
         alpha_o=1/inv_alpha_obs,
         k_a = k_act,
         alpha_a = 1/inv_alpha_a,
-        max_depth = max_depth
+        max_depth = Int(max_depth)
     )
 end
 rmprocs(worker_ids)
