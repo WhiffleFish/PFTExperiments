@@ -8,7 +8,7 @@ include("../../src/evaluate.jl")
     using QuickPOMDPs
     using POMDPModelTools
     using Distributions
-    using PFTDPW
+    using POMCPOW
 
     r = 60
     light_loc = 10
@@ -43,6 +43,7 @@ include("../../src/evaluate.jl")
 end
 
 search_iter = 200
+
 bu = BootstrapFilter(pomdp, 1_000)
 params = OptParams(POMCPOWSolver, pomdp, 500, bu, 40)
 
@@ -64,7 +65,7 @@ ho = @hyperopt for i=search_iter,
         alpha_action=1/inv_alpha_act,
         tree_queries=100_000,
         max_depth = Int(max_depth),
-        default_action = (b,ex) -> rand(actions(pomdp))
+        default_action = (args...) -> rand(actions(pomdp))
     )
 end
 

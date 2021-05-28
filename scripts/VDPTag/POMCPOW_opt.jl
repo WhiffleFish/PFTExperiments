@@ -1,14 +1,22 @@
 using Distributed
 
-worker_ids = addprocs(10; exeflags="--project")
+worker_ids = addprocs(20; exeflags="--project")
 
 include("../../src/evaluate.jl")
-@everywhere using POMCPOW
-@everywhere using LaserTag
+
+@everywhere begin
+    using QuickPOMDPs
+    using POMDPModelTools
+    using Distributions
+    using VDPTag2
+    using POMCPOW
+
+    pomdp = VDPTagPOMDP()
+end
 
 search_iter = 200
 
-@everywhere pomdp = gen_lasertag()
+
 bu = BootstrapFilter(pomdp, 1_000)
 params = OptParams(POMCPOWSolver, pomdp, 500, bu, 40)
 
