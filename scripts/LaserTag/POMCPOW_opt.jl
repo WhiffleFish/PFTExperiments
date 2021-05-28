@@ -29,7 +29,8 @@ ho = @hyperopt for i=search_iter,
         k_action=k_act,
         alpha_action=1/inv_alpha_act,
         tree_queries=100_000,
-        max_depth = Int(max_depth)
+        max_depth = Int(max_depth),
+        default_action = (b,ex) -> rand(actions(pomdp))
     )
 end
 

@@ -20,8 +20,9 @@ ho = @hyperopt for i=search_iter,
         inv_alpha_obs = Float64.(10:40),
         k_act = Float64.(2:10),
         inv_alpha_act = Float64.(10:40),
-        max_depth = Float64.(10:100)
-    println("($i/$search_iter) \t c=$c")
+        max_depth = Float64.(10:100),
+        n_p = Float64.(100:100:1_000)
+    println("($i/$search_iter) \t c=$c \t k_obs=$k_obs \t k_act=$k_act")
     @show evaluate(params;
         c=c,
         max_time=0.10,
@@ -29,8 +30,9 @@ ho = @hyperopt for i=search_iter,
         k_o=k_obs,
         alpha_o=1/inv_alpha_obs,
         k_a = k_act,
-        alpha_a = 1/inv_alpha_a,
-        max_depth = Int(max_depth)
+        alpha_a = 1/inv_alpha_act,
+        max_depth = Int(max_depth),
+        n_particles = Int(n_p)
     )
 end
 rmprocs(worker_ids)
