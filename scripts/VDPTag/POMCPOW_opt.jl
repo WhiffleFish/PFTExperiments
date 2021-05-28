@@ -18,15 +18,15 @@ search_iter = 200
 
 
 bu = BootstrapFilter(pomdp, 1_000)
-params = OptParams(POMCPOWSolver, pomdp, 500, bu, 40)
+params = OptParams(POMCPOWSolver, pomdp, 500, bu, 100)
 
 ho = @hyperopt for i=search_iter,
         sampler = GPSampler(Max),
         c = Float64.(1:100),
-        k_obs = Float64.(1:20),
-        inv_alpha_obs = Float64.(10:40),
+        k_obs = Float64.(1:100),
+        inv_alpha_obs = Float64.(10:50),
         k_act = Float64.(2:10),
-        inv_alpha_act = Float64.(10:40),
+        inv_alpha_act = Float64.(10:50),
         max_depth = Float64.(10:100)
     println("($i/$search_iter) \t c=$c \t k_obs=$k_obs \t k_act=$k_act")
     @show evaluate(params;

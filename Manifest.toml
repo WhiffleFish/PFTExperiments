@@ -847,12 +847,6 @@ git-tree-sha1 = "5069fdbda2ad54c7e29d8c356535d62eb6afeb23"
 uuid = "4c53ee00-974c-466f-8fa5-8dd73959bbab"
 version = "0.3.4"
 
-[[POMDPGifs]]
-deps = ["POMDPModelTools", "POMDPPolicies", "POMDPSimulators", "POMDPs", "Parameters", "ProgressMeter", "Random", "Reel"]
-git-tree-sha1 = "1f55bfc754afff05be80b0894c31c45831bdc59b"
-uuid = "7f35509c-0cb9-11e9-0708-2928828cdbb7"
-version = "0.1.0"
-
 [[POMDPLinter]]
 deps = ["Logging"]
 git-tree-sha1 = "cee5817d06f5e1a9054f3e1bbb50cbabae4cd5a5"
