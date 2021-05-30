@@ -43,4 +43,4 @@ end
 
 rmprocs(worker_ids)
 
-save("scripts/LaserTag/data/POMCPOW_params.jld2", Dict("ho"=>ho))
+save("scripts/VDPTag/data/POMCPOW_params.jld2", Dict("ho"=>ho))
