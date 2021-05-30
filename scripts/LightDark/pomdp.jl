@@ -33,5 +33,5 @@ pomdp = QuickPOMDP(
         end
     end,
 
-    initialstate = POMDPModelTools.Uniform(div(-r,2):div(-r,2))
+    initialstate = POMDPModelTools.Uniform(div(-r,2):div(r,2))
 )

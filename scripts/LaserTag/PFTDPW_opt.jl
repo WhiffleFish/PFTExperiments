@@ -1,5 +1,6 @@
 using Distributed
-worker_ids = addprocs(10; exeflags="--project")
+
+worker_ids = addprocs(20; exeflags="--project")
 
 include("../../src/evaluate.jl")
 @everywhere using PFTDPW
@@ -10,7 +11,7 @@ search_iter = 200
 pomdp = BabyPOMDP()
 k_a = length(actions(pomdp)) - 1
 
-bu = BootstrapFilter(pomdp, 1_000)
+bu = BootstrapFilter(pomdp, 100_000)
 params = OptParams(PFTDPWSolver, pomdp, 500, bu, 40)
 
 ho = @hyperopt for i=search_iter,

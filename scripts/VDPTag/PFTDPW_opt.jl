@@ -14,10 +14,10 @@ include("../../src/evaluate.jl")
     pomdp = VDPTagPOMDP()
 end
 
-search_iter = 200
+search_iter = 50
 
-bu = BootstrapFilter(pomdp, 1_000)
-params = OptParams(PFTDPWSolver, pomdp, 500, bu, 100)
+bu = BootstrapFilter(pomdp, 100_000)
+params = OptParams(PFTDPWSolver, pomdp, 500, bu, 50)
 
 ho = @hyperopt for i=search_iter,
         sampler = GPSampler(Max),

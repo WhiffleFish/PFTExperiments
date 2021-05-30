@@ -1,6 +1,6 @@
 using Distributed
 
-worker_ids = addprocs(10; exeflags="--project")
+worker_ids = addprocs(20; exeflags="--project")
 
 include("../../src/evaluate.jl")
 @everywhere using POMCPOW
@@ -9,7 +9,7 @@ include("../../src/evaluate.jl")
 search_iter = 200
 
 @everywhere pomdp = gen_lasertag()
-bu = BootstrapFilter(pomdp, 1_000)
+bu = BootstrapFilter(pomdp, 100_000)
 params = OptParams(POMCPOWSolver, pomdp, 500, bu, 40)
 
 ho = @hyperopt for i=search_iter,

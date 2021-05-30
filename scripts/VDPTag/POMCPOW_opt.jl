@@ -14,11 +14,10 @@ include("../../src/evaluate.jl")
     pomdp = VDPTagPOMDP()
 end
 
-search_iter = 200
+search_iter = 50
 
-
-bu = BootstrapFilter(pomdp, 1_000)
-params = OptParams(POMCPOWSolver, pomdp, 500, bu, 100)
+bu = BootstrapFilter(pomdp, 100_000)
+params = OptParams(POMCPOWSolver, pomdp, 500, bu, 50)
 
 ho = @hyperopt for i=search_iter,
         sampler = GPSampler(Max),
@@ -31,7 +30,7 @@ ho = @hyperopt for i=search_iter,
     println("($i/$search_iter) \t c=$c \t k_obs=$k_obs \t k_act=$k_act")
     @show evaluate(params;
         criterion=MaxUCB(c),
-        max_time=0.10,
+        max_time=1.0,
         k_observation=k_obs,
         alpha_observation=1/inv_alpha_obs,
         k_action=k_act,
