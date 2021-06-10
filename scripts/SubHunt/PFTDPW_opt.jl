@@ -15,7 +15,7 @@ end
 
 search_iter = 200
 
-bu = BootstrapFilter(pomdp, 10_000)
+bu = BootstrapFilter(pomdp, 100_000)
 params = OptParams(PFTDPWSolver, pomdp, 200, bu, 100)
 
 ho = @hyperopt for i=search_iter,
@@ -26,7 +26,7 @@ ho = @hyperopt for i=search_iter,
         k_act = Float64.(2:10),
         inv_alpha_act = Float64.(10:40),
         max_depth = Float64.(10:100),
-        n_p = Float64.(100:100:1_000)
+        n_p = Float64.([10,20,50,100,500,1_000])
     println("($i/$search_iter) \t c=$c \t k_obs=$k_obs \t k_act=$k_act \t n_p=$n_p")
     @show evaluate(params;
         c=c,

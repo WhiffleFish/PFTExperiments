@@ -15,7 +15,7 @@ end
 
 search_iter = 200
 
-bu = BootstrapFilter(pomdp, 10_000)
+bu = BootstrapFilter(pomdp, 100_000)
 params = OptParams(POMCPOWSolver, pomdp, 200, bu, 100)
 
 ho = @hyperopt for i=search_iter,
