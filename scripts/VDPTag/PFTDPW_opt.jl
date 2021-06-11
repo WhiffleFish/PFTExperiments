@@ -42,4 +42,4 @@ ho = @hyperopt for i=search_iter,
     )
 end
 rmprocs(worker_ids)
-save("scripts/VDPTag/data/PFTDPW_params.jld2", Dict("ho"=>ho))
+save(join([@__DIR__,"/data/PFTDPW_params.jld2"]), Dict("ho"=>ho))

@@ -71,4 +71,4 @@ end
 
 rmprocs(worker_ids)
 
-save("scripts/LaserTag/data/POMCPOW_params.jld2", Dict("ho"=>ho))
+save(join([@__DIR__,"/data/POMCPOW_params.jld2"]), Dict("ho"=>ho))
