@@ -8,7 +8,7 @@ The simple 1-D light dark problem from https://arxiv.org/pdf/1709.06196v6.pdf, s
 r = 60
 light_loc = 10
 
-pomdp = QuickPOMDP(
+const LightDarkPOMDP = QuickPOMDP(
     states = -r:r+1,                  # r+1 is a terminal state
     actions = [-10, -1, 0, 1, 10],
     discount = 0.95,
