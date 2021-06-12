@@ -17,7 +17,7 @@ ho = @hyperopt for i=search_iter,
         c = Float64.(1:100),
         depth = Float64.(10:100)
     println("($i/$search_iter) \t c=$c \t depth=$depth")
-    @show evaluate(params
+    @show evaluate(params;
         c = c,
         max_time=0.10,
         tree_queries=100_000,
