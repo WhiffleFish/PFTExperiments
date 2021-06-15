@@ -8,7 +8,8 @@ include("../../src/evaluate.jl")
 
 search_iter = 200
 
-@everywhere pomdp = gen_lasertag()
+pomdp = BabyPOMDP()
+k_a = length(actions(pomdp)) - 1
 
 bu = BootstrapFilter(pomdp, 100_000)
 params = OptParams(PFTDPWSolver, pomdp, 500, bu, 40)

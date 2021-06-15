@@ -1,4 +1,4 @@
-using JLD2
+using JLD2, Hyperopt
 
 """
 Hyperopt macro stores objective as anonymous function, which breaks save with JLD2

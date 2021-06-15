@@ -1,6 +1,7 @@
 using POMDPs
 using POMDPSimulators
 using DataFrames
+using CSV
 
 mutable struct BatchBenchmark # Parameterize
     pomdp::POMDP
@@ -17,7 +18,7 @@ function benchmark(bb::BatchBenchmark)
     sol_names = Vector{String}(undef,tot_sims)
     times = Vector{Float64}(undef,tot_sims)
 
-    ro = RolloutSimulator(max_steps=bb.max_steps))
+    ro = RolloutSimulator(max_steps=bb.max_steps)
 
     i = 1
     for t in bb.times
@@ -34,9 +35,10 @@ function benchmark(bb::BatchBenchmark)
                 bb.updater,
                 max_steps=bb.max_steps,
                 simulator=ro
+            )
             sims = Sim[deepcopy(sim) for _ in 1:bb.N]
             res = run_parallel(sims, show_progress=true)
-            
+
             rewards[i:(i+bb.N-1)] .= res.reward
             sol_names[i:(i+bb.N-1)] .= name
             times[i:(i+bb.N-1)] .= t
