@@ -1,12 +1,16 @@
-using ParticleFilters
-using PFTDPW, POMCPOW
-using POMDPModels
+using Distributed
 using CSV
 
-include(join([@__DIR__,"/../../src/benchmark2.jl"]))
-include(join([@__DIR__,"/../../util/restore.jl"]))
-include(join([@__DIR__,"/pomdp.jl"]))
+worker_ids = Distributed.addprocs(20; exeflags="--project")
 
+Distributed.@everywhere begin
+    using ParticleFilters
+    using PFTDPW, POMCPOW, BasicPOMCP
+    include(join([@__DIR__,"/../../src/benchmark2.jl"]))
+    include(join([@__DIR__,"/pomdp.jl"]))
+end
+
+include(join([@__DIR__,"/../../util/restore.jl"]))
 ho_pft = RestoreHopt(join([@__DIR__,"/data/PFTDPW_params.jld2"]))
 ho_sparsepft = RestoreHopt(join([@__DIR__,"/data/SparsePFT_params.jld2"]))
 ho_pomcpow = RestoreHopt(join([@__DIR__,"/data/POMCPOW_params.jld2"]))
@@ -69,5 +73,7 @@ N = 100
 bb = BatchBenchmark(pomdp, times, solvers, updater, max_steps, N)
 
 df = benchmark(bb)
+
+rmprocs(worker_ids)
 
 CSV.write(join([@__DIR__,"/data/compare.csv"]), df)

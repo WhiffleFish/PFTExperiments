@@ -6,7 +6,7 @@ using CSV
 mutable struct BatchBenchmark # Parameterize
     pomdp::POMDP
     times::Vector{Float64}
-    solvers::Vector{ Tuple{UnionAll, String, Dict{Symbol,Any}} } # (solver_type, solver_name, solver_params)
+    solvers::Vector{ Tuple{Any, String, Dict{Symbol,Any}} } # (solver_type, solver_name, solver_params)
     updater::Updater
     max_steps::Int
     N::Int # number of times to repeat a simulation
@@ -24,7 +24,7 @@ function benchmark(bb::BatchBenchmark)
     for t in bb.times
         for (sol_t,name,p) in bb.solvers
 
-            println("Solver: $sol_t")
+            println("Solver: $name")
             println("Planning Time: $t")
 
             solver = sol_t(; max_time=t, p...)
