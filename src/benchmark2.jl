@@ -1,14 +1,15 @@
 using POMDPs
 using POMDPSimulators
 using DataFrames
+using Random
 using CSV
 
 mutable struct BatchBenchmark # Parameterize
     pomdp::POMDP
-    times::Vector{Float64}
+    times::Vector{Float64} # planning times
     solvers::Vector{ Tuple{Any, String, Dict{Symbol,Any}} } # (solver_type, solver_name, solver_params)
-    updater::Updater
-    max_steps::Int
+    updater::Updater # sim belief updater
+    max_steps::Int # max sim steps
     N::Int # number of times to repeat a simulation
 end
 
@@ -17,8 +18,6 @@ function benchmark(bb::BatchBenchmark)
     rewards = Vector{Float64}(undef,tot_sims)
     sol_names = Vector{String}(undef,tot_sims)
     times = Vector{Float64}(undef,tot_sims)
-
-    ro = RolloutSimulator(max_steps=bb.max_steps)
 
     i = 1
     for t in bb.times
@@ -29,14 +28,13 @@ function benchmark(bb::BatchBenchmark)
 
             solver = sol_t(; max_time=t, p...)
             planner = solve(solver, bb.pomdp)
-            sim = POMDPSimulators.Sim(
+            sims = [POMDPSimulators.Sim(
                 bb.pomdp,
                 planner,
                 bb.updater,
                 max_steps=bb.max_steps,
-                simulator=ro
-            )
-            sims = Sim[deepcopy(sim) for _ in 1:bb.N]
+                simulator=RolloutSimulator(max_steps=bb.max_steps, rng = MersenneTwister(rand(UInt32)))
+            ) for _ in 1:bb.N]
             res = run_parallel(sims, show_progress=true)
 
             rewards[i:(i+bb.N-1)] .= res.reward
