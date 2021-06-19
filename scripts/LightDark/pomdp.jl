@@ -5,25 +5,25 @@ using Distributions
 The simple 1-D light dark problem from https://arxiv.org/pdf/1709.06196v6.pdf, section 5.2, or https://slides.com/zacharysunberg/defense-4#/39
 =#
 
-r = 60
-light_loc = 10
+const R = 60
+const LIGHT_LOC = 10
 
 const LightDarkPOMDP = QuickPOMDP(
-    states = -r:r+1,                  # r+1 is a terminal state
+    states = -R:R+1,                  # r+1 is a terminal state
     actions = [-10, -1, 0, 1, 10],
     discount = 0.95,
-    isterminal = s -> !(s in -r:r),
+    isterminal = s::Int -> s==R::Int+1,
     obstype = Float64,
 
-    transition = function (s, a)
+    transition = function (s::Int, a::Int)
         if a == 0
-            return Deterministic(r+1)
+            return Deterministic{Int}(R::Int+1)
         else
-            return Deterministic(clamp(s+a, -r, r))
+            return Deterministic{Int}(clamp(s+a, -R::Int, R::Int))
         end
     end,
 
-    observation = (s, a, sp) -> Normal(sp, abs(sp - light_loc) + 0.0001),
+    observation = (s, a, sp) -> Normal(sp, abs(sp - LIGHT_LOC::Int) + 1e-3),
 
     reward = function (s, a, sp, o)
         if a == 0
@@ -33,5 +33,5 @@ const LightDarkPOMDP = QuickPOMDP(
         end
     end,
 
-    initialstate = POMDPModelTools.Uniform(div(-r,2):div(r,2))
+    initialstate = POMDPModelTools.Uniform(div(-R::Int,2):div(R::Int,2))
 )

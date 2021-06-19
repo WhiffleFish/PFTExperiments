@@ -1,4 +1,5 @@
-pomdp = LightDark1D()
+include(join([@__DIR__,"/pomdp.jl"]))
+pomdp = LightDarkPOMDP
 
 t = 1.0
 d = 50

@@ -23,33 +23,33 @@ pomcp_params = Dict(a=>b for (a,b) in zip(ho_pomcp.params, ho_pomcp.maximizer))
 pomdp = LightDarkPOMDP
 times = 10 .^ range(-2., 0., length=7)
 PFTDPW_params = Dict{Symbol,Any}(
-    :c => 8.0,
-    :k_o => 20.0,
-    :k_a => 7.0,
-    :alpha_o => 1/32,
-    :alpha_a => 1/11,
-    :n_particles => 500,
-    :max_depth => 69,
+    :c => 100.0,
+    :k_o => 4.0,
+    :k_a => 2.0,
+    :alpha_o => 1/10,
+    :alpha_a => 0.0,
+    :n_particles => 20,
+    :max_depth => 50,
     :tree_queries => 1_000_000,
     :check_repeat_obs => false
 )
 
 SparsePFT_params = Dict{Symbol,Any}(
-    :c => 6.0,
-    :k_o => 16.0,
-    :k_a => 9.0,
-    :alpha_o => 0.0,
+    :c => 100.0,
+    :k_o => 4.0,
+    :k_a => 2.0,
+    :alpha_o => 1/10,
     :alpha_a => 0.0,
-    :n_particles => 1000,
-    :max_depth => 71,
+    :n_particles => 20,
+    :max_depth => 50,
     :tree_queries => 1_000_000,
     :check_repeat_obs => false
 )
 
 POMCPOW_params = Dict{Symbol,Any}(
-    :criterion => MaxUCB(99.0),
-    :k_observation => 11.0,
-    :alpha_observation => 1/37,
+    :criterion => MaxUCB(90.0),
+    :k_observation => 5.0,
+    :alpha_observation => 1/15,
     :enable_action_pw => false,
     :check_repeat_obs => false,
     :tree_queries => 10_000_000,
