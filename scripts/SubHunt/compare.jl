@@ -74,7 +74,7 @@ solvers = [
 
 updater = BootstrapFilter(pomdp, 100_000)
 max_steps = 100
-N = 100
+N = 500
 
 bb = BatchBenchmark(pomdp, times, solvers, updater, max_steps, N)
 
