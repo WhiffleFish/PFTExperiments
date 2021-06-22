@@ -6,8 +6,8 @@ worker_ids = Distributed.addprocs(20; exeflags="--project")
 Distributed.@everywhere begin
     using ParticleFilters
     using PFTDPW, POMCPOW, BasicPOMCP
+    using VDPTag2
     include(join([@__DIR__,"/../../src/benchmark2.jl"]))
-    include(join([@__DIR__,"/pomdp.jl"]))
 end
 
 include(join([@__DIR__,"/../../util/restore.jl"]))
@@ -20,46 +20,48 @@ sparsepft_params = Dict(a=>b for (a,b) in zip(ho_sparsepft.params, ho_sparsepft.
 pomcpow_params = Dict(a=>b for (a,b) in zip(ho_pomcpow.params, ho_pomcpow.maximizer))
 pomcp_params = Dict(a=>b for (a,b) in zip(ho_pomcp.params, ho_pomcp.maximizer))
 
-pomdp = LightDarkPOMDP
+pomdp = VDPTagPOMDP()
 times = 10.0 .^ (-2:0.25:0)
 PFTDPW_params = Dict{Symbol,Any}(
-    :c => 100.0,
-    :k_o => 4.0,
-    :k_a => 4.0,
-    :alpha_o => 1/10,
-    :alpha_a => 0.0,
+    :c => 70.0,
+    :k_o => 8.0,
+    :k_a => 20.0,
+    :alpha_o => 1/85,
+    :alpha_a => 1/25,
     :n_particles => 20,
     :max_depth => 50,
     :tree_queries => 1_000_000,
     :check_repeat_obs => false,
-    :enable_action_pw => false
+    :enable_action_pw => true
 )
 
 SparsePFT_params = Dict{Symbol,Any}(
-    :c => 100.0,
-    :k_o => 4.0,
-    :k_a => 4.0,
+    :c => 70.0,
+    :k_o => 8.0,
+    :k_a => 20.0,
     :alpha_o => 1/10,
     :alpha_a => 0.0,
     :n_particles => 20,
     :max_depth => 50,
     :tree_queries => 1_000_000,
     :check_repeat_obs => false,
-    :enable_action_pw => false
+    :enable_action_pw => true
 )
 
 POMCPOW_params = Dict{Symbol,Any}(
-    :criterion => MaxUCB(90.0),
+    :criterion => MaxUCB(110.0),
     :k_observation => 5.0,
-    :alpha_observation => 1/15,
-    :enable_action_pw => false,
+    :k_action => 30,
+    :alpha_action => 1/30,
+    :alpha_observation => 1/100,
+    :enable_action_pw => true,
     :check_repeat_obs => false,
     :tree_queries => 10_000_000,
     :default_action => (args...) -> rand(actions(pomdp))
 )
 
 POMCP_params = Dict{Symbol, Any}(
-    :c => 83.0,
+    :c => 110.0,
     :max_depth => 84,
     :tree_queries => 10_000_000,
     :default_action => (args...) -> rand(actions(pomdp))
@@ -72,7 +74,7 @@ solvers = [
     (POMCPSolver, "POMCP", POMCP_params)
 ]
 
-updater = BootstrapFilter(pomdp, 10_000)
+updater = BootstrapFilter(pomdp, 100_000)
 max_steps = 50
 N = 100
 

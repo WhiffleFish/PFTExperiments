@@ -13,7 +13,7 @@ pomcpow_params = Dict(a=>b for (a,b) in zip(ho_pomcpow.params, ho_pomcpow.maximi
 pomcp_params = Dict(a=>b for (a,b) in zip(ho_pomcp.params, ho_pomcp.maximizer))
 
 pomdp = BabyPOMDP()
-times = Float64[0.01,0.05]
+times = 10.0 .^ (-2:0.25:0)
 PFTDPW_params = Dict{Symbol,Any}(
     :c => 93.0,
     :k_o => 4.0,
@@ -21,7 +21,8 @@ PFTDPW_params = Dict{Symbol,Any}(
     :alpha_o => 1/23,
     :n_particles => 100,
     :tree_queries => 1_000_000,
-    :max_depth => 10
+    :max_depth => 10,
+    :enable_action_pw => false
 )
 
 POMCPOW_params = Dict{Symbol,Any}(
