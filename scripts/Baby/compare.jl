@@ -1,16 +1,27 @@
-using ParticleFilters
-using PFTDPW, POMCPOW
+using Distributed
 using POMDPModels
+using CSV
 
-include(join([@__DIR__,"/../../src/benchmark2.jl"]))
+worker_ids = Distributed.addprocs(20; exeflags="--project")
+
+Distributed.@everywhere begin
+    using POMDPs
+    using POMDPSimulators
+    using ParticleFilters
+    using PFTDPW, POMCPOW, BasicPOMCP
+end
+
+include(joinpath(@__DIR__,"../../src/benchmark.jl"))
+
+#=
 include(join([@__DIR__,"/../../util/restore.jl"]))
-
 ho_pft = RestoreHopt(join([@__DIR__,"/data/PFTDPW_params.jld2"]))
 ho_pomcpow = RestoreHopt(join([@__DIR__,"/data/POMCPOW_params.jld2"]))
 ho_pomcp = RestoreHopt(join([@__DIR__,"/data/BasicPOMCP_params.jld2"]))
 pft_params = Dict(a=>b for (a,b) in zip(ho_pft.params, ho_pft.maximizer))
 pomcpow_params = Dict(a=>b for (a,b) in zip(ho_pomcpow.params, ho_pomcpow.maximizer))
 pomcp_params = Dict(a=>b for (a,b) in zip(ho_pomcp.params, ho_pomcp.maximizer))
+=#
 
 pomdp = BabyPOMDP()
 times = 10.0 .^ (-2:0.25:0)
@@ -49,8 +60,10 @@ solvers = [
 
 updater = BootstrapFilter(pomdp, 10_000)
 max_steps = 50
-N = 500
+N = 1000
 
 bb = BatchBenchmark(pomdp, times, solvers, updater, max_steps, N)
 
 df = benchmark(bb)
+
+CSV.write(joinpath(@__DIR__,"data/compare.csv"), df)

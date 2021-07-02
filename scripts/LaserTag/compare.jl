@@ -1,11 +1,20 @@
-using ParticleFilters
-using PFTDPW, POMCPOW
-using LaserTag
+using Distributed
 using CSV
 
-include(join([@__DIR__,"/../../src/benchmark2.jl"]))
-include(join([@__DIR__,"/../../util/restore.jl"]))
+worker_ids = Distributed.addprocs(20; exeflags="--project")
 
+Distributed.@everywhere begin
+    using POMDPs
+    using POMDPSimulators
+    using ParticleFilters
+    using PFTDPW, POMCPOW, BasicPOMCP
+    using LaserTag
+end
+
+include(joinpath(@__DIR__,"../../src/benchmark.jl"))
+
+#=
+include(join([@__DIR__,"/../../util/restore.jl"]))
 ho_pft = RestoreHopt(join([@__DIR__,"/data/PFTDPW_params.jld2"]))
 ho_sparsepft = RestoreHopt(join([@__DIR__,"/data/SparsePFT_params.jld2"]))
 ho_pomcpow = RestoreHopt(join([@__DIR__,"/data/POMCPOW_params.jld2"]))
@@ -14,6 +23,7 @@ pft_params = Dict(a=>b for (a,b) in zip(ho_pft.params, ho_pft.maximizer))
 sparsepft_params = Dict(a=>b for (a,b) in zip(ho_sparsepft.params, ho_sparsepft.maximizer))
 pomcpow_params = Dict(a=>b for (a,b) in zip(ho_pomcpow.params, ho_pomcpow.maximizer))
 pomcp_params = Dict(a=>b for (a,b) in zip(ho_pomcp.params, ho_pomcp.maximizer))
+=#
 
 pomdp = gen_lasertag()
 times = 10.0 .^ (-2:0.25:0)
@@ -65,10 +75,10 @@ solvers = [
 
 updater = BootstrapFilter(pomdp, 10_000)
 max_steps = 50
-N = 500
+N = 1000
 
 bb = BatchBenchmark(pomdp, times, solvers, updater, max_steps, N)
 
 df = benchmark(bb)
 
-CSV.write(join([@__DIR__,"/data/compare.csv"]), df)
+CSV.write(joinpath(@__DIR__,"data/compare.csv"), df)
