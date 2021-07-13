@@ -31,9 +31,7 @@ times = 10.0 .^ (-2:0.25:0)
 PFTDPW_params = Dict{Symbol,Any}(
     :c => 100.0,
     :k_o => 2.0,
-    :k_a => 4.0,
     :alpha_o => 1/10,
-    :alpha_a => 0.0,
     :n_particles => 20,
     :max_depth => 50,
     :tree_queries => 1_000_000,
@@ -44,9 +42,7 @@ PFTDPW_params = Dict{Symbol,Any}(
 SparsePFT_params = Dict{Symbol,Any}(
     :c => 100.0,
     :k_o => 2.0,
-    :k_a => 4.0,
     :alpha_o => 1/10,
-    :alpha_a => 0.0,
     :n_particles => 20,
     :max_depth => 50,
     :tree_queries => 1_000_000,
@@ -88,4 +84,7 @@ df = benchmark(bb)
 
 rmprocs(worker_ids)
 
-CSV.write(joinpath(@__DIR__,"/data/compare.csv"), df)
+date_str = Dates.format(now(), "_yyyy_mm_dd")
+filename = "compare"*date_str*".csv"
+filepath = joinpath(@__DIR__, "data", filename)
+CSV.write(filepath,df)

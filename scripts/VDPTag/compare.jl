@@ -89,4 +89,7 @@ df = benchmark(bb)
 
 rmprocs(worker_ids)
 
-CSV.write(joinpath(@__DIR__,"/data/compare.csv"), df)
+date_str = Dates.format(now(), "_yyyy_mm_dd")
+filename = "compare"*date_str*".csv"
+filepath = joinpath(@__DIR__, "data", filename)
+CSV.write(filepath,df)

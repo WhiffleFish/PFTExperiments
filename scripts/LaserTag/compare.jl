@@ -45,7 +45,7 @@ SparsePFT_params = Dict{Symbol,Any}(
     :k_a => 9.0,
     :alpha_o => 0.0,
     :alpha_a => 0.0,
-    :n_particles => 1000,
+    :n_particles => 20,
     :max_depth => 71,
     :check_repeat_obs => false,
     :enable_action_pw => false
@@ -73,7 +73,7 @@ solvers = [
     (POMCPSolver, "POMCP", POMCP_params)
 ]
 
-updater = BootstrapFilter(pomdp, 10_000)
+updater = BootstrapFilter(pomdp, 500_000)
 max_steps = 50
 N = 1000
 
@@ -81,4 +81,7 @@ bb = BatchBenchmark(pomdp, times, solvers, updater, max_steps, N)
 
 df = benchmark(bb)
 
-CSV.write(joinpath(@__DIR__,"data/compare.csv"), df)
+date_str = Dates.format(now(), "_yyyy_mm_dd")
+filename = "compare"*date_str*".csv"
+filepath = joinpath(@__DIR__, "data", filename)
+CSV.write(filepath,df)
