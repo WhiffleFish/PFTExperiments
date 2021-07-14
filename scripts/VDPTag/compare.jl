@@ -1,5 +1,6 @@
 using Distributed
 using CSV
+using Dates
 
 worker_ids = Distributed.addprocs(20; exeflags="--project")
 
@@ -80,8 +81,8 @@ solvers = [
 ]
 
 updater = BootstrapFilter(pomdp, 100_000)
-max_steps = 50
-N = 1000
+max_steps = 100
+N = 5000
 
 bb = BatchBenchmark(pomdp, times, solvers, updater, max_steps, N)
 
