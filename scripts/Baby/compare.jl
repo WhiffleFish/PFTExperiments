@@ -67,6 +67,8 @@ bb = BatchBenchmark(pomdp, times, solvers, updater, max_steps, N)
 
 df = benchmark(bb)
 
+rmprocs(worker_ids)
+
 date_str = Dates.format(now(), "_yyyy_mm_dd")
 filename = "compare"*date_str*".csv"
 filepath = joinpath(@__DIR__, "data", filename)
