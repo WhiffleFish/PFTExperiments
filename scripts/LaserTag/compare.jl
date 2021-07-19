@@ -35,7 +35,8 @@ PFTDPW_params = Dict{Symbol,Any}(
     :alpha_o => 1/35,
     :alpha_a => 1/35,
     :n_particles => 20,
-    :max_depth => 69,
+    :max_depth => 50,
+    :tree_queries => 1_000_000,
     :check_repeat_obs => false,
     :enable_action_pw => false
 )
@@ -47,23 +48,27 @@ SparsePFT_params = Dict{Symbol,Any}(
     :alpha_o => 0.0,
     :alpha_a => 0.0,
     :n_particles => 20,
-    :max_depth => 71,
+    :max_depth => 50,
+    :tree_queries => 1_000_000,
     :check_repeat_obs => false,
     :enable_action_pw => false
 )
 
 POMCPOW_params = Dict{Symbol,Any}(
     :criterion => MaxUCB(26.0),
+    :max_depth => 50,
     :k_observation => 4.0,
     :alpha_observation => 1/35,
     :enable_action_pw => false,
     :check_repeat_obs => false,
+    :tree_queries => 10_000_000,
     :default_action => (args...) -> rand(actions(pomdp))
 )
 
 POMCP_params = Dict{Symbol, Any}(
     :c => 26.0,
     :max_depth => 50,
+    :tree_queries => 10_000_000,
     :default_action => (args...) -> rand(actions(pomdp))
 )
 
