@@ -26,16 +26,35 @@ function BenchmarkSummary(path::String, title::String)
     solvers = unique(df.sol)
     N = first(size(df))/(length(solvers)*length(times))
 
-    plot_df = DataFrame(sol=String[], t=Float64[], mean=Float64[], ymin=Float64[], ymax=Float64[])
+    plot_df = DataFrame(sol=String[], t=Float64[], mean=Float64[], stder=Float64[], ymin=Float64[], ymax=Float64[])
     for sol in solvers
         for t in times
             data = df[(df.sol .== sol) .* (df.t .== t), :].r
             mean = Statistics.mean(data)
             stder = Statistics.std(data)/sqrt(N)
-            push!(plot_df, [sol, t, mean, mean-stder, mean+stder])
+            push!(plot_df, [sol, t, mean, stder, mean-stder, mean+stder])
         end
     end
     return BenchmarkSummary(title, plot_df, solvers, times)
+end
+
+function BenchmarkSummary(path::String)
+    l_path = lowercase(path)
+    name_dict = Dict(
+        "baby" => "Baby",
+        "lightdark" => "LightDark",
+        "lasertag" => "LaserTag",
+        "subhunt" => "SubHunt",
+        "vdptag" => "VDPTag"
+    )
+    title = "Benchmark"
+    for (k,v) in name_dict
+        if occursin(k,l_path)
+            title = "$v Benchmark"
+            break
+        end
+    end
+    return BenchmarkSummary(path,title)
 end
 
 function Gadfly.plot(b::BenchmarkSummary)
@@ -58,9 +77,10 @@ end
 ## Example
 
 #=
-filepath = joinpath(SUBHUNT_DATA_PATH, "compare_2021_07_13.csv")
+filepath = joinpath(SUBHUNT_DATA_PATH, "compare_2021_07_21.csv")
 
-b = BenchmarkSummary(filepath, "SubHunt Benchmark")
+b = BenchmarkSummary(filepath, "LightDark Benchmark")
+b = BenchmarkSummary(filepath)
 
 p = plot(b)
 
