@@ -9,6 +9,7 @@ Distributed.@everywhere begin
     using POMDPSimulators
     using ParticleFilters
     using PFTDPW, POMCPOW, BasicPOMCP
+    using DiscreteValueIteration
     using SubHunt
 end
 
@@ -28,6 +29,8 @@ pomcp_params = Dict(a=>b for (a,b) in zip(ho_pomcp.params, ho_pomcp.maximizer))
 
 
 pomdp = SubHuntPOMDP()
+VE = FOValue(ValueIterationSolver())
+
 times = 10.0 .^ (-2:0.25:0)
 PFTDPW_params = Dict{Symbol,Any}(
     :c => 100.0,
@@ -36,6 +39,7 @@ PFTDPW_params = Dict{Symbol,Any}(
     :n_particles => 20,
     :max_depth => 50,
     :tree_queries => 1_000_000,
+    :value_estimator => VE,
     :check_repeat_obs => false,
     :enable_action_pw => false
 )
@@ -47,6 +51,7 @@ SparsePFT_params = Dict{Symbol,Any}(
     :n_particles => 20,
     :max_depth => 50,
     :tree_queries => 1_000_000,
+    :value_estimator => VE,
     :check_repeat_obs => false,
     :enable_action_pw => false
 )
@@ -58,6 +63,7 @@ POMCPOW_params = Dict{Symbol,Any}(
     :enable_action_pw => false,
     :check_repeat_obs => false,
     :tree_queries => 10_000_000,
+    :estimate_value => VE,
     :default_action => (args...) -> rand(actions(pomdp))
 )
 
