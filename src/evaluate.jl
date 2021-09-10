@@ -1,10 +1,10 @@
 using Hyperopt
 using FileIO
+using Distributed
 
 @everywhere begin
     using Pkg
     Pkg.activate(".")
-    Pkg.instantiate()
     using POMDPs
     using POMDPModels
     using BeliefUpdaters
@@ -12,7 +12,7 @@ using FileIO
     using POMDPSimulators
 end
 
-struct OptParams{T<:Solver}
+mutable struct OptParams{T<:Solver}
     sol_t::Type{T}
     pomdp::POMDP
     n::Int
@@ -24,13 +24,13 @@ function evaluate(params::OptParams; kwargs...)
     solver = params.sol_t(;kwargs...)
     planner = solve(solver, params.pomdp)
     bu = params.updater
-    sim = POMDPSimulators.Sim(
+    sims = [POMDPSimulators.Sim(
         params.pomdp,
         planner,
         bu,
         max_steps=params.max_steps,
         simulator=RolloutSimulator(max_steps=params.max_steps))
-    sims = Sim[deepcopy(sim) for _ in 1:params.n]
+        for _ in 1:params.n]
     res = run_parallel(sims, show_progress=true)
     return mean(res.reward)
 end

@@ -10,6 +10,7 @@ const LIGHT_LOC = 10
 
 const LightDarkPOMDP = QuickPOMDP(
     states = -R:R+1,                  # r+1 is a terminal state
+    stateindex = s -> s + R + 1,
     actions = [-10, -1, 0, 1, 10],
     discount = 0.95,
     isterminal = s::Int -> s==R::Int+1,

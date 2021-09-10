@@ -26,13 +26,13 @@ function BenchmarkSummary(path::String, title::String)
     solvers = unique(df.sol)
     N = first(size(df))/(length(solvers)*length(times))
 
-    plot_df = DataFrame(sol=String[], t=Float64[], mean=Float64[], stder=Float64[], ymin=Float64[], ymax=Float64[])
+    plot_df = DataFrame(sol=String[], t=Float64[], mean=Float64[], stder=Float64[])
     for sol in solvers
         for t in times
             data = df[(df.sol .== sol) .* (df.t .== t), :].r
             mean = Statistics.mean(data)
             stder = Statistics.std(data)/sqrt(N)
-            push!(plot_df, [sol, t, mean, stder, mean-stder, mean+stder])
+            push!(plot_df, [sol, t, mean, stder])
         end
     end
     return BenchmarkSummary(title, plot_df, solvers, times)
@@ -57,8 +57,10 @@ function BenchmarkSummary(path::String)
     return BenchmarkSummary(path,title)
 end
 
-function Gadfly.plot(b::BenchmarkSummary)
-    layer1 = layer(x=:t, ymin=:ymin, ymax=:ymax, color=:sol, Geom.ribbon, Theme(default_color=RGB(1,1,1)), alpha=[0.60])
+function Gadfly.plot(b::BenchmarkSummary; smooth::Bool=false, ci::Number=1)
+    ymin = b.data[!,:mean] .- b.data[!,:stder] .* ci
+    ymax = b.data[!,:mean] .+ b.data[!,:stder] .* ci
+    layer1 = layer(x=:t, ymin=ymin, ymax=ymax, color=:sol, Geom.ribbon, Theme(default_color=RGB(1,1,1)), alpha=[0.60])
     layer2 = layer(x=:t, y=:mean, color=:sol, Geom.point, Geom.line)
     tmin, tmax = extrema(b.times)
     return plot(
@@ -70,19 +72,19 @@ function Gadfly.plot(b::BenchmarkSummary)
         Guide.xlabel("Planning Time (s)"),
         Guide.ylabel("Reward"),
         Guide.title(b.title),
-        Guide.colorkey(title="Solver"))
+        Guide.colorkey(title="Solver")
+        )
 end
 
 
 ## Example
 
-#=
-filepath = joinpath(SUBHUNT_DATA_PATH, "compare_2021_07_21.csv")
 
-b = BenchmarkSummary(filepath, "LightDark Benchmark")
+filepath = joinpath(SUBHUNT_DATA_PATH, "compare_2021_08_06.csv")
+
+# b = BenchmarkSummary(filepath, "LightDark Benchmark")
 b = BenchmarkSummary(filepath)
 
 p = plot(b)
 
 draw(SVG(7.5inch, 5inch), p)
-=#
