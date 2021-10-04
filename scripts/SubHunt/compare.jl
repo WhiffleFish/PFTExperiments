@@ -2,7 +2,7 @@ using Distributed
 using CSV
 using Dates
 
-worker_ids = Distributed.addprocs(20; exeflags="--project")
+worker_ids = Distributed.addprocs(40; exeflags="--project")
 
 Distributed.@everywhere begin
     using POMDPs
@@ -11,6 +11,7 @@ Distributed.@everywhere begin
     using PFTDPW, POMCPOW, BasicPOMCP
     using DiscreteValueIteration
     using SubHunt
+    using QMDP
 end
 
 include(joinpath(@__DIR__,"../../src/benchmark.jl"))
@@ -30,6 +31,7 @@ pomcp_params = Dict(a=>b for (a,b) in zip(ho_pomcp.params, ho_pomcp.maximizer))
 
 pomdp = SubHuntPOMDP()
 VE = FOValue(ValueIterationSolver())
+PO_VE = PFTDPW.PORollout(QMDPSolver(),1)
 
 times = 10.0 .^ (-2:0.25:0)
 PFTDPW_params = Dict{Symbol,Any}(
@@ -39,7 +41,7 @@ PFTDPW_params = Dict{Symbol,Any}(
     :n_particles => 20,
     :max_depth => 50,
     :tree_queries => 1_000_000,
-    :value_estimator => VE,
+    :value_estimator => PO_VE,
     :check_repeat_obs => false,
     :enable_action_pw => false
 )
@@ -51,7 +53,7 @@ SparsePFT_params = Dict{Symbol,Any}(
     :n_particles => 20,
     :max_depth => 50,
     :tree_queries => 1_000_000,
-    :value_estimator => VE,
+    :value_estimator => PO_VE,
     :check_repeat_obs => false,
     :enable_action_pw => false
 )
@@ -75,8 +77,8 @@ POMCP_params = Dict{Symbol, Any}(
 )
 
 solvers = [
-    (PFTDPWSolver,"PFTDPW", PFTDPW_params),
-    (PFTDPWSolver,"SparsePFT", SparsePFT_params),
+    # (PFTDPWSolver,"PFTDPW", PFTDPW_params),
+    # (PFTDPWSolver,"SparsePFT", SparsePFT_params)
     (POMCPOWSolver, "POMCPOW", POMCPOW_params),
     (POMCPSolver, "POMCP", POMCP_params)
 ]

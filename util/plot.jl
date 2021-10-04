@@ -79,12 +79,12 @@ end
 
 ## Example
 
+filepath = joinpath(SUBHUNT_DATA_PATH, "compare_2021_07_21.csv")
 
-filepath = joinpath(SUBHUNT_DATA_PATH, "compare_2021_08_06.csv")
-
-# b = BenchmarkSummary(filepath, "LightDark Benchmark")
 b = BenchmarkSummary(filepath)
 
-p = plot(b)
+p = plot(b, ci=1.0)
 
 draw(SVG(7.5inch, 5inch), p)
+
+CSV.File()
