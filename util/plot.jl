@@ -1,17 +1,14 @@
-using Gadfly
+using CairoMakie
 using CSV
 using DataFrames
 using Statistics
-using ColorTypes
 
-Gadfly.push_theme(:dark)
-
-SCRIPTS_PATH = joinpath(@__DIR__, "../scripts")
-BABY_DATA_PATH = joinpath(SCRIPTS_PATH, "Baby/data")
-LASERTAG_DATA_PATH = joinpath(SCRIPTS_PATH, "LaserTag/data")
-LIGHTDARK_DATA_PATH = joinpath(SCRIPTS_PATH, "LightDark/data")
-SUBHUNT_DATA_PATH = joinpath(SCRIPTS_PATH, "SubHunt/data")
-VDPTAG_DATA_PATH = joinpath(SCRIPTS_PATH, "VDPTag/data")
+SCRIPTS_PATH = joinpath(@__DIR__, "..", "scripts")
+BABY_DATA_PATH = joinpath(SCRIPTS_PATH, "Baby", "data")
+LASERTAG_DATA_PATH = joinpath(SCRIPTS_PATH, "LaserTag", "data")
+LIGHTDARK_DATA_PATH = joinpath(SCRIPTS_PATH, "LightDark", "data")
+SUBHUNT_DATA_PATH = joinpath(SCRIPTS_PATH, "SubHunt", "data")
+VDPTAG_DATA_PATH = joinpath(SCRIPTS_PATH, "VDPTag", "data")
 
 struct BenchmarkSummary
     title::String
@@ -57,34 +54,50 @@ function BenchmarkSummary(path::String)
     return BenchmarkSummary(path,title)
 end
 
-function Gadfly.plot(b::BenchmarkSummary; smooth::Bool=false, ci::Number=1)
-    ymin = b.data[!,:mean] .- b.data[!,:stder] .* ci
-    ymax = b.data[!,:mean] .+ b.data[!,:stder] .* ci
-    layer1 = layer(x=:t, ymin=ymin, ymax=ymax, color=:sol, Geom.ribbon, Theme(default_color=RGB(1,1,1)), alpha=[0.60])
-    layer2 = layer(x=:t, y=:mean, color=:sol, Geom.point, Geom.line)
-    tmin, tmax = extrema(b.times)
-    return plot(
-        b.data,
-        layer2,
-        layer1,
-        Coord.Cartesian(xmin=log10(tmin),xmax=log10(tmax)),
-        Scale.x_log10,
-        Guide.xlabel("Planning Time (s)"),
-        Guide.ylabel("Reward"),
-        Guide.title(b.title),
-        Guide.colorkey(title="Solver")
-        )
+function sort_data(data::DataFrame)
+    t_unsorted, μ_unsorted, σ_unsorted = data.t, data.mean, data.stder
+    p = sortperm(t_unsorted)
+    t = t_unsorted[p]
+    μ = μ_unsorted[p]
+    σ = σ_unsorted[p]
+    return t, μ, σ
 end
 
+function plot_data(b::BenchmarkSummary; ignore=[], ci::Number=2)
+    data = b.data
+    names = ["POMCPOW", "PFTDPW", "SparsePFT", "POMCP"]
+    df_data = [
+        (name, data[data.sol .== name,:]) for name in names if name ∉ ignore
+    ]
+
+    f = Figure()
+    axis = Axis(
+        f[1,1],
+        title = b.title,
+        xlabel = "Planning Time (s)",
+        ylabel = "Discounted Reward",
+        xscale = log10
+    )
+
+    line_arr = []
+    for (name, data) in df_data
+        t, μ, σ = sort_data(data)
+        l = lines!(t, μ, marker=:rect)
+        push!(line_arr, l)
+        band!(t, μ .- ci*σ, μ .+ ci*σ)
+    end
+    axislegend(axis, line_arr, [first(t) for t in df_data], position = :lt)
+    display(f)
+    return f
+end
 
 ## Example
 
-filepath = joinpath(SUBHUNT_DATA_PATH, "compare_2021_07_21.csv")
+filepath = joinpath(VDPTAG_DATA_PATH, "compare_2021_07_15.csv")
+filepath = joinpath(LASERTAG_DATA_PATH, "compare_2021_10_03.csv")
+filepath = joinpath(LIGHTDARK_DATA_PATH, "compare_2021_09_30.csv")
+filepath = joinpath(SUBHUNT_DATA_PATH, "compare_2021_09_30.csv")
 
 b = BenchmarkSummary(filepath)
 
-p = plot(b, ci=1.0)
-
-draw(SVG(7.5inch, 5inch), p)
-
-CSV.File()
+f = plot_data(b, ignore=["POMCP"], ci=2)
