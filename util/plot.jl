@@ -69,22 +69,29 @@ function plot_data(b::BenchmarkSummary; ignore=[], ci::Number=2)
     df_data = [
         (name, data[data.sol .== name,:]) for name in names if name ∉ ignore
     ]
+    color_dict = Dict{String, Symbol}(
+        "POMCPOW" => :blue,
+        "PFTDPW" => :orange,
+        "SparsePFT" => :green,
+        "POMCP" => :purple
+    )
 
     f = Figure()
     axis = Axis(
         f[1,1],
         title = b.title,
-        xlabel = "Planning Time (s)",
-        ylabel = "Discounted Reward",
+        xlabel = "Planning Time (sec) - Log Scale",
+        ylabel = "Reward",
         xscale = log10
     )
 
     line_arr = []
     for (name, data) in df_data
+        color = color_dict[name]
         t, μ, σ = sort_data(data)
-        l = lines!(t, μ, marker=:rect)
+        l = lines!(t, μ, marker=:rect, color=color, linestyle=:dash)
         push!(line_arr, l)
-        band!(t, μ .- ci*σ, μ .+ ci*σ)
+        band!(t, μ .- ci*σ, μ .+ ci*σ, color=(color,0.5))
     end
     axislegend(axis, line_arr, [first(t) for t in df_data], position = :lt)
     display(f)
@@ -94,10 +101,24 @@ end
 ## Example
 
 filepath = joinpath(VDPTAG_DATA_PATH, "compare_2021_07_15.csv")
-filepath = joinpath(LASERTAG_DATA_PATH, "compare_2021_10_03.csv")
-filepath = joinpath(LIGHTDARK_DATA_PATH, "compare_2021_09_30.csv")
-filepath = joinpath(SUBHUNT_DATA_PATH, "compare_2021_09_30.csv")
-
 b = BenchmarkSummary(filepath)
-
 f = plot_data(b, ignore=["POMCP"], ci=2)
+save(joinpath(@__DIR__,"..","img","VDPTag_2021_07_15.svg"), f)
+
+
+filepath = joinpath(LASERTAG_DATA_PATH, "compare_2021_10_03.csv")
+b = BenchmarkSummary(filepath)
+f = plot_data(b, ignore=["POMCP"], ci=2)
+save(joinpath(@__DIR__,"..","img","LaserTag_2021_07_15.svg"), f)
+
+
+filepath = joinpath(LIGHTDARK_DATA_PATH, "compare_2021_09_30.csv")
+b = BenchmarkSummary(filepath)
+f = plot_data(b, ignore=["POMCP"], ci=2)
+save(joinpath(@__DIR__,"..","img","LightDark_2021_07_15.svg"), f)
+
+
+filepath = joinpath(SUBHUNT_DATA_PATH, "compare_2021_09_30.csv")
+b = BenchmarkSummary(filepath)
+f = plot_data(b, ignore=["POMCP"], ci=2)
+save(joinpath(@__DIR__,"..","img","Subhunt_2021_07_15.svg"), f)
