@@ -1,9 +1,9 @@
 # Experiments for PFTDPW & SparsePFT
 
-<img src="./img/LaserTag_2021_07_15.svg">
+<img src="./img/LaserTag.svg">
 
-<img src="./img/LightDark_2021_07_15.svg">
+<img src="./img/LightDark.svg">
 
-<img src="./img/Subhunt_2021_07_15.svg">
+<img src="./img/Subhunt.svg">
 
-<img src="./img/VDPTag_2021_07_15.svg">
+<img src="./img/VDPTag.svg">
