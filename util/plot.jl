@@ -3,12 +3,14 @@ using CSV
 using DataFrames
 using Statistics
 
-SCRIPTS_PATH = joinpath(@__DIR__, "..", "scripts")
-BABY_DATA_PATH = joinpath(SCRIPTS_PATH, "Baby", "data")
-LASERTAG_DATA_PATH = joinpath(SCRIPTS_PATH, "LaserTag", "data")
-LIGHTDARK_DATA_PATH = joinpath(SCRIPTS_PATH, "LightDark", "data")
-SUBHUNT_DATA_PATH = joinpath(SCRIPTS_PATH, "SubHunt", "data")
-VDPTAG_DATA_PATH = joinpath(SCRIPTS_PATH, "VDPTag", "data")
+const SCRIPTS_PATH = joinpath(@__DIR__, "..", "scripts")
+const BABY_DATA_PATH = joinpath(SCRIPTS_PATH, "Baby", "data")
+const LASERTAG_DATA_PATH = joinpath(SCRIPTS_PATH, "LaserTag", "data")
+const LIGHTDARK_DATA_PATH = joinpath(SCRIPTS_PATH, "LightDark", "data")
+const SUBHUNT_DATA_PATH = joinpath(SCRIPTS_PATH, "SubHunt", "data")
+const VDPTAG_DATA_PATH = joinpath(SCRIPTS_PATH, "VDPTag", "data")
+
+const LINESTYLES = [nothing, :dash, :dot, :dashdot, :dashdotdot]
 
 struct BenchmarkSummary
     title::String
@@ -63,7 +65,7 @@ function sort_data(data::DataFrame)
     return t, μ, σ
 end
 
-function plot_ax!(f::GridPosition, b::BenchmarkSummary; ignore=[], ci::Number=2, legend=true)
+function plot_ax!(f::GridPosition, b::BenchmarkSummary; ignore=[], ci::Number=2, legend=true, kwargs...)
     data = b.data
     names = ["POMCPOW", "PFTDPW", "SparsePFT", "POMCP"]
     df_data = [
@@ -71,16 +73,17 @@ function plot_ax!(f::GridPosition, b::BenchmarkSummary; ignore=[], ci::Number=2,
     ]
 
     axis = Axis(
-        f,
+        f;
         title = b.title,
         xlabel = "Planning Time (sec) - Log Scale",
         ylabel = "Reward",
         xscale = log10,
-        xticks = 10. .^ [-2,-1,0],
+        xticks = exp10.([-2,-1,0]),
         xminorticksvisible = true,
         xminorgridvisible = true,
         xminorticks = IntervalsBetween(9),
-        limits = (0.01, 1.0, nothing, nothing)
+        limits = (0.01, 1.0, nothing, nothing),
+        kwargs...
     )
     color_dict = Dict{String, Symbol}(
         "POMCPOW" => :blue,
@@ -89,11 +92,11 @@ function plot_ax!(f::GridPosition, b::BenchmarkSummary; ignore=[], ci::Number=2,
         "POMCP" => :purple
     )
     line_arr = []
-    for (name, data) in df_data
+    for (i,(name, data)) in enumerate(df_data)
         color = color_dict[name]
         t, μ, σ = sort_data(data)
-        l = lines!(t, μ, marker=:rect, color=color, linestyle=:dash)
-        b = band!(t, μ .- ci*σ, μ .+ ci*σ, color=(color,0.5))
+        l = lines!(t, μ, marker=:rect, color=color, linestyle=LINESTYLES[i])
+        b = band!(t, μ .- ci*σ, μ .+ ci*σ, color=(color,0.25))
         push!(line_arr, [l,b])
     end
     if legend
@@ -142,9 +145,9 @@ save(joinpath(@__DIR__,"..","img","Subhunt_2021_07_15.svg"), f)
 set_theme!(Theme(fontsize=14, font="Times New Roman"))
 
 f = Figure()
-plot_ax!(f[1,1], b1, ignore=["POMCP"]; legend=true)
-plot_ax!(f[1,2], b2, ignore=["POMCP"]; legend=false)
+plot_ax!(f[1,1], b1, ignore=["POMCP"]; legend=true, xlabel="")
+plot_ax!(f[1,2], b2, ignore=["POMCP"]; legend=false, xlabel="", ylabel="")
 plot_ax!(f[2,1], b3, ignore=["POMCP"]; legend=false)
-plot_ax!(f[2,2], b4, ignore=["POMCP"]; legend=false)
+plot_ax!(f[2,2], b4, ignore=["POMCP"]; legend=false, ylabel="")
 display(f)
 save(joinpath(@__DIR__,"..","img","all_plots.svg"), f)

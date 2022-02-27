@@ -30,7 +30,11 @@ function unshuffled_benchmark(bb::BatchBenchmark)
             println("Solver: $name")
             println("Planning Time: $t")
 
-            solver = sol_t(; max_time=t, p...)
+            try
+                solver = sol_t(; max_time=t, p...)
+            catch
+                solver = sol_t(; T_max=t, p...)
+            end
             planner = solve(solver, bb.pomdp)
             sims = [POMDPSimulators.Sim(
                 bb.pomdp,
