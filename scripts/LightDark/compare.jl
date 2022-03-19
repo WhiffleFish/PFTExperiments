@@ -31,7 +31,7 @@ pomcp_params = Dict(a=>b for (a,b) in zip(ho_pomcp.params, ho_pomcp.maximizer))
 
 pomdp = LightDarkPOMDP
 VE = FOValue(ValueIterationSolver())
-PO_VE = PFTDPW.PORollout(QMDPSolver(),0)
+PO_VE = PFTDPW.PORollout(QMDPSolver(); n_rollouts=0)
 
 times = 10.0 .^ (-2:0.25:0)
 PFTDPW_params = Dict{Symbol,Any}(

@@ -24,7 +24,7 @@ const LightDarkPOMDP = QuickPOMDP(
         end
     end,
 
-    observation = (s, a, sp) -> Normal(sp, abs(sp - LIGHT_LOC::Int) + 1e-3),
+    observation = (a, sp) -> Normal(sp, abs(sp - LIGHT_LOC::Int) + 1e-3), # used to be (s,a,sp) but doesn't work with AdaOPS
 
     reward = function (s, a)
         if a == 0

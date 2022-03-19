@@ -31,7 +31,7 @@ pomcp_params = Dict(a=>b for (a,b) in zip(ho_pomcp.params, ho_pomcp.maximizer))
 
 pomdp = gen_lasertag()
 VE = FOValue(ValueIterationSolver())
-PO_VE = PFTDPW.PORollout(QMDPSolver(),1)
+PO_VE = PFTDPW.PORollout(QMDPSolver(); n_rollouts=1)
 
 times = 10.0 .^ (-2:0.25:0)
 PFTDPW_params = Dict{Symbol,Any}(
