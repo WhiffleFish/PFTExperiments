@@ -79,11 +79,22 @@ POMCP_params = Dict{Symbol, Any}(
     :default_action => (args...) -> rand(actions(pomdp))
 )
 
+AdaOPS_params = Dict{Symbol, Any}(
+    :bounds => AdaOPS.IndependentBounds(
+        BasicPOMCP.PORollout(QMDPSolver(), BootstrapFilter(pomdp, 20)),
+        VE,
+        check_terminal=true
+    ),
+    :timeout_warning_threshold => 2.0,
+    :default_action => (args...) -> rand(actions(pomdp))
+)
+
 solvers = [
-    (PFTDPWSolver,"PFTDPW", PFTDPW_params),
-    (PFTDPWSolver,"SparsePFT", SparsePFT_params),
-    (POMCPOWSolver, "POMCPOW", POMCPOW_params),
-    (POMCPSolver, "POMCP", POMCP_params)
+    # (PFTDPWSolver,"PFTDPW", PFTDPW_params),
+    # (PFTDPWSolver,"SparsePFT", SparsePFT_params),
+    # (POMCPOWSolver, "POMCPOW", POMCPOW_params),
+    # (POMCPSolver, "POMCP", POMCP_params)
+    (AdaOPSSolver, "AdaOPS", AdaOPS_params)
 ]
 
 updater = BootstrapFilter(pomdp, 10_000)
