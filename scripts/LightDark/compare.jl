@@ -8,7 +8,7 @@ Distributed.@everywhere begin
     using POMDPs
     using POMDPSimulators
     using ParticleFilters
-    # using PFTDPW, POMCPOW, BasicPOMCP
+    using PFTDPW, POMCPOW, BasicPOMCP
     using AdaOPS
     using DiscreteValueIteration
     include(join([@__DIR__,"/pomdp.jl"]))
