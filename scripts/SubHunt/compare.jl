@@ -9,6 +9,7 @@ Distributed.@everywhere begin
     using POMDPSimulators
     using ParticleFilters
     using PFTDPW, POMCPOW, BasicPOMCP
+    using AdaOPS
     using DiscreteValueIteration
     using SubHunt
     using QMDP
