@@ -28,7 +28,7 @@ function BenchmarkSummary(path::String, title::String)
     plot_df = DataFrame(sol=String[], t=Float64[], mean=Float64[], stder=Float64[])
     for sol in solvers
         for t in times
-            data = df[(df.sol .== sol) .* (df.t .== t), :].r
+            data = df[(df.sol .== sol) .* (df.t .≈  t), :].r
             mean = Statistics.mean(data)
             stder = Statistics.std(data)/sqrt(N)
             push!(plot_df, [sol, t, mean, stder])
@@ -67,9 +67,9 @@ end
 
 function plot_ax!(f::GridPosition, b::BenchmarkSummary; ignore=[], ci::Number=2, legend=true, kwargs...)
     data = b.data
-    names = ["POMCPOW", "PFTDPW", "SparsePFT", "POMCP"]
+    names = b.solvers # ["POMCPOW", "PFTDPW", "SparsePFT", "POMCP", "AdaOPS"]
     df_data = [
-        (name, data[data.sol .== name,:]) for name in names if name ∉ ignore
+        (name, data[data.sol .== name,:]) for name in names if (name ∉ ignore)
     ]
 
     axis = Axis(
@@ -89,7 +89,8 @@ function plot_ax!(f::GridPosition, b::BenchmarkSummary; ignore=[], ci::Number=2,
         "POMCPOW" => :blue,
         "PFTDPW" => :orange,
         "SparsePFT" => :green,
-        "POMCP" => :purple
+        "POMCP" => :purple,
+        "AdaOPS" => :yellow
     )
     line_arr = []
     for (i,(name, data)) in enumerate(df_data)
@@ -151,3 +152,14 @@ plot_ax!(f[2,1], b3, ignore=["POMCP"]; legend=false)
 plot_ax!(f[2,2], b4, ignore=["POMCP"]; legend=false, ylabel="")
 display(f)
 save(joinpath(@__DIR__,"..","img","all_plots.svg"), f)
+
+
+##
+filepath = joinpath(LIGHTDARK_DATA_PATH, "compare_2022_03_19.csv")
+df = DataFrame(CSV.File(filepath))
+
+b3 = BenchmarkSummary(filepath)
+f = plot_data(b3, ignore=["POMCP"], ci=2)
+save(joinpath(@__DIR__,"..","img","LightDark_2021_07_15.svg"), f)
+
+b3.data
