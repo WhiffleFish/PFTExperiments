@@ -155,11 +155,7 @@ save(joinpath(@__DIR__,"..","img","all_plots.svg"), f)
 
 
 ##
-filepath = joinpath(LIGHTDARK_DATA_PATH, "compare_2022_03_19.csv")
-df = DataFrame(CSV.File(filepath))
-
-b3 = BenchmarkSummary(filepath)
-f = plot_data(b3, ignore=["POMCP"], ci=2)
-save(joinpath(@__DIR__,"..","img","LightDark_2021_07_15.svg"), f)
-
-b3.data
+filepath = joinpath(LIGHTDARK_DATA_PATH, "AdaOPS_2022_03_21.csv")
+b = BenchmarkSummary(filepath)
+f = plot_data(b, ci=2)
+save(joinpath(@__DIR__,"..","img","LightDark_2021_03_21.svg"), f)

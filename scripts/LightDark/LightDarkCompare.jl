@@ -1,6 +1,28 @@
 include(join([@__DIR__,"/pomdp.jl"]))
 pomdp = LightDarkPOMDP
 
+##
+using POMDPs
+sol = AdaOPSSolver(T_max = 0.01, timeout_warning_threshold=2.0)
+planner = solve(sol, pomdp)
+b0 = initialstate(pomdp)
+@time action(planner,b0)
+
+using BenchmarkTools
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 t = 1.0
 d = 50
 pft_solver = PFTDPWSolver(

@@ -88,8 +88,8 @@ AdaOPS_params = Dict{Symbol, Any}(
     ),
     :timeout_warning_threshold => 2.0,
     :default_action => (args...) -> rand(actions(pomdp)),
-    :m_min = 10,
-    :delta = 1.0
+    :m_min => 10,
+    :delta => 1.0
 )
 
 solvers = [
