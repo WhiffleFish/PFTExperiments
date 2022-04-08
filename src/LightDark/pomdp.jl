@@ -1,14 +1,10 @@
-using QuickPOMDPs
-using POMDPModelTools
-using Distributions
 #=
 The simple 1-D light dark problem from https://arxiv.org/pdf/1709.06196v6.pdf, section 5.2, or https://slides.com/zacharysunberg/defense-4#/39
 =#
-
 const R = 60
 const LIGHT_LOC = 10
 
-const LightDarkPOMDP = QuickPOMDP(
+const LDPOMDP = QuickPOMDP(
     states = -R:R+1,                  # r+1 is a terminal state
     stateindex = s -> s + R + 1,
     actions = [-10, -1, 0, 1, 10],
@@ -36,3 +32,5 @@ const LightDarkPOMDP = QuickPOMDP(
 
     initialstate = POMDPModelTools.Uniform(div(-R::Int,2):div(R::Int,2))
 )
+
+LightDarkPOMDP() = LDPOMDP

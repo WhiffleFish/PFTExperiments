@@ -11,25 +11,14 @@ Distributed.@everywhere begin
     using PFTDPW, POMCPOW, BasicPOMCP
     using AdaOPS
     using DiscreteValueIteration
-    include(join([@__DIR__,"/pomdp.jl"]))
+    using ContObsExperiments.LightDark
     using QMDP
 end
 
-include(joinpath(@__DIR__,"../../src/benchmark.jl"))
+using ContObsExperiments
+using ContObsExperiments.LightDark
 
-#=
-include(join([@__DIR__,"/../../util/restore.jl"]))
-ho_pft = RestoreHopt(join([@__DIR__,"/data/PFTDPW_params.jld2"]))
-ho_sparsepft = RestoreHopt(join([@__DIR__,"/data/SparsePFT_params.jld2"]))
-ho_pomcpow = RestoreHopt(join([@__DIR__,"/data/POMCPOW_params.jld2"]))
-ho_pomcp = RestoreHopt(join([@__DIR__,"/data/BasicPOMCP_params.jld2"]))
-pft_params = Dict(a=>b for (a,b) in zip(ho_pft.params, ho_pft.maximizer))
-sparsepft_params = Dict(a=>b for (a,b) in zip(ho_sparsepft.params, ho_sparsepft.maximizer))
-pomcpow_params = Dict(a=>b for (a,b) in zip(ho_pomcpow.params, ho_pomcpow.maximizer))
-pomcp_params = Dict(a=>b for (a,b) in zip(ho_pomcp.params, ho_pomcp.maximizer))
-=#
-
-pomdp = LightDarkPOMDP
+pomdp = LightDark.LightDarkPOMDP()
 VE = FOValue(ValueIterationSolver())
 PO_VE = PFTDPW.PORollout(QMDPSolver(); n_rollouts=0)
 

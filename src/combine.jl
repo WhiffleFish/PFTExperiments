@@ -16,6 +16,8 @@ function combinedf(fp1::String, s1, fp2::String, s2)
 
     return vcat(df1[idx1,:], df2[idx2,:])
 end
+
+#=
 fp1 = joinpath(LASERTAG_DATA_PATH, "compare_2021_10_01.csv")
 fp2 = joinpath(LASERTAG_DATA_PATH, "compare_2021_09_30.csv")
 
@@ -28,3 +30,4 @@ CSV.write(new_filepath, df_new)
 b = BenchmarkSummary(new_filepath)
 p = plot(b)
 draw(SVG(7.5inch, 5inch), p)
+=#

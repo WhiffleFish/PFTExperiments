@@ -1,14 +1,8 @@
-using POMDPs
-using POMDPSimulators
-using DataFrames
-using Random
-using CSV
-
-struct BatchBenchmark # Parameterize
+struct BatchBenchmark{UPD<:Updater}
     pomdp::POMDP
     times::Vector{Float64} # planning times
     solvers::Vector{ Tuple{Any, String, Dict{Symbol,Any}} } # (solver_type, solver_name, solver_params)
-    updater::Updater # sim belief updater
+    updater::UPD # sim belief updater
     max_steps::Int # max sim steps
     N::Int # number of times to repeat a simulation
 end
