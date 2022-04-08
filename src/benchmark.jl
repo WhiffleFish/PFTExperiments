@@ -58,10 +58,9 @@ function shuffled_benchmark(bb::BatchBenchmark)
     for t in bb.times
         for (sol_t,name,p) in bb.solvers
 
-            solver = if sol_t <: AdaOPSSolver
+            solver = try sol_t(; max_time=t, p...)
+            catch
                 sol_t(; T_max=t, p...)
-            else
-                sol_t(; max_time=t, p...)
             end
             planner = solve(solver, bb.pomdp)
             cur_sims = [POMDPSimulators.Sim(

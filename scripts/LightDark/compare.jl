@@ -2,11 +2,12 @@ using Distributed
 using CSV
 using Dates
 
-worker_ids = Distributed.addprocs(40; exeflags="--project")
+worker_ids = Distributed.addprocs(5; exeflags="--project")
 
 Distributed.@everywhere begin
     using POMDPs
     using POMDPSimulators
+    using POMDPPolicies
     using ParticleFilters
     using PFTDPW, POMCPOW, BasicPOMCP
     using AdaOPS
@@ -71,17 +72,15 @@ POMCP_params = Dict{Symbol, Any}(
 
 AdaOPS_params = Dict{Symbol, Any}(
     :bounds => AdaOPS.IndependentBounds(
-        BasicPOMCP.PORollout(QMDPSolver(), BootstrapFilter(pomdp, 20)),
-        VE,
+        BasicPOMCP.FORollout(RandomSolver()),
+        AdaOPS.POValue(QMDPSolver()),
         check_terminal=true
     ),
-    :timeout_warning_threshold => 2.0,
-    :default_action => (args...) -> rand(actions(pomdp)),
-    :m_min => 10,
-    :delta => 1.0
+    :timeout_warning_threshold => Inf,
+    :default_action => (args...) -> rand(actions(pomdp))
 )
 
-solvers = [
+solvers = Tuple{Any, String, Dict{Symbol, Any}}[
     # (PFTDPWSolver,"PFTDPW", PFTDPW_params),
     # (PFTDPWSolver,"SparsePFT", SparsePFT_params),
     # (POMCPOWSolver, "POMCPOW", POMCPOW_params),
@@ -91,7 +90,7 @@ solvers = [
 
 updater = BootstrapFilter(pomdp, 10_000)
 max_steps = 30
-N = 1000
+N = 10
 
 bb = BatchBenchmark(pomdp, times, solvers, updater, max_steps, N)
 

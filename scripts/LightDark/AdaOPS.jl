@@ -4,10 +4,21 @@ using POMDPs
 using POMDPModelTools
 using POMDPSimulators
 using ParticleFilters
+using QMDP
+using BasicPOMCP
 using AdaOPS
+using POMDPPolicies
+
 pomdp = LightDark.LightDarkPOMDP()
 
-sol = AdaOPSSolver(T_max = 1.0)
+bnds = AdaOPS.IndependentBounds(
+    BasicPOMCP.FORollout(RandomSolver()),
+    AdaOPS.POValue(QMDPSolver()),
+    check_terminal = true
+)
+
+
+sol = AdaOPSSolver(T_max = 0.1, bounds = bnds, timeout_warning_threshold=Inf)
 planner = solve(sol, pomdp)
 
 b0 = initialstate(pomdp)

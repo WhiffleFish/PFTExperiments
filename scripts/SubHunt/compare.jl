@@ -8,6 +8,7 @@ Distributed.@everywhere begin
     using POMDPs
     using POMDPSimulators
     using ParticleFilters
+    using POMDPPolicies
     using PFTDPW, POMCPOW, BasicPOMCP
     using AdaOPS
     using DiscreteValueIteration
@@ -67,15 +68,15 @@ POMCP_params = Dict{Symbol, Any}(
 
 AdaOPS_params = Dict{Symbol, Any}(
     :bounds => AdaOPS.IndependentBounds(
-        BasicPOMCP.PORollout(QMDPSolver(), BootstrapFilter(pomdp, 20)),
-        VE,
+        BasicPOMCP.FORollout(RandomSolver()),
+        AdaOPS.POValue(QMDPSolver()),
         check_terminal=true
     ),
-    :timeout_warning_threshold => 2.0,
+    :timeout_warning_threshold => Inf,
     :default_action => (args...) -> rand(actions(pomdp))
 )
 
-solvers = [
+solvers = Tuple{Any, String, Dict{Symbol, Any}}[
     # (PFTDPWSolver,"PFTDPW", PFTDPW_params),
     # (PFTDPWSolver,"SparsePFT", SparsePFT_params)
     # (POMCPOWSolver, "POMCPOW", POMCPOW_params),
