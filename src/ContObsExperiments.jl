@@ -22,4 +22,6 @@ export SCRIPTS_PATH,
 
 include(joinpath("LightDark", "LightDark.jl"))
 
+include("combine.jl")
+
 end

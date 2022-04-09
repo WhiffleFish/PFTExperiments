@@ -2,7 +2,7 @@ using Distributed
 using CSV
 using Dates
 
-worker_ids = Distributed.addprocs(5; exeflags="--project")
+worker_ids = Distributed.addprocs(20; exeflags="--project")
 
 Distributed.@everywhere begin
     using POMDPs
