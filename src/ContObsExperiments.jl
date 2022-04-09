@@ -4,6 +4,7 @@ using POMDPSimulators
 using DataFrames
 using Random
 using CSV
+using Dates
 
 include("benchmark.jl")
 export BatchBenchmark, benchmark

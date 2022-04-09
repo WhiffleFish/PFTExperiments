@@ -1,3 +1,5 @@
+const DATE_RE = r"\d{4}_\d{2}_\d{2}"
+
 function combinedf(fp1::String, s1, fp2::String, s2)
     df1 = DataFrame(CSV.File(fp1))
     df2 = DataFrame(CSV.File(fp2))
@@ -17,17 +19,27 @@ function combinedf(fp1::String, s1, fp2::String, s2)
     return vcat(df1[idx1,:], df2[idx2,:])
 end
 
-#=
-fp1 = joinpath(LASERTAG_DATA_PATH, "compare_2021_10_01.csv")
-fp2 = joinpath(LASERTAG_DATA_PATH, "compare_2021_09_30.csv")
+function latest(path::AbstractString, prefix::AbstractString="")
+    files = readdir(path)
+    full_re = prefix * r".*" * DATE_RE
 
-df_new = combinedf(fp1, ["POMCPOW", "POMCP"], fp2, ["PFTDPW", "SparsePFT"])
+    dt_latest = DateTime(0)
+    filename_latest = ""
 
-new_filepath = joinpath(LASERTAG_DATA_PATH, "compare_2021_10_03.csv")
-
-CSV.write(new_filepath, df_new)
-
-b = BenchmarkSummary(new_filepath)
-p = plot(b)
-draw(SVG(7.5inch, 5inch), p)
-=#
+    for filename in files
+        re_match = match(full_re, filename)
+        if !isnothing(re_match)
+            dt_str = match(DATE_RE, filename).match
+            dt = DateTime(dt_str, dateformat"yyyy_mm_dd")
+            if dt > dt_latest
+                dt_latest = dt
+                filename_latest = filename
+            end
+        end
+    end
+    if dt_latest == DateTime(0)
+        throw(DomainError, "No Matches")
+    else
+        return joinpath(path, filename_latest)
+    end
+end
