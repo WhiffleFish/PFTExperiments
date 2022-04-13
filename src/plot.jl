@@ -1,3 +1,5 @@
+set_theme!(Theme(fontsize=21, font="Times New Roman"))
+
 const SCRIPTS_PATH = joinpath(@__DIR__, "..", "scripts")
 const BABY_DATA_PATH = joinpath(SCRIPTS_PATH, "Baby", "data")
 const LASERTAG_DATA_PATH = joinpath(SCRIPTS_PATH, "LaserTag", "data")
@@ -5,13 +7,54 @@ const LIGHTDARK_DATA_PATH = joinpath(SCRIPTS_PATH, "LightDark", "data")
 const SUBHUNT_DATA_PATH = joinpath(SCRIPTS_PATH, "SubHunt", "data")
 const VDPTAG_DATA_PATH = joinpath(SCRIPTS_PATH, "VDPTag", "data")
 
-const LINESTYLES = [nothing, :dash, :dot, :dashdot, :dashdotdot]
+const COLOR_SCHEME = ColorSchemes.Accent_6.colors
+
+const SOLVER_LINESTYLES = Dict{String, Any}(
+    "SparsePFT" => nothing,
+    "PFTDPW" => :dash,
+    "POMCPOW" => :dot,
+    "POMCP" => :dashdot,
+    "AdaOPS" => :dashdotdot
+)
+
+const SOLVER_COLORS = Dict{String, ColorSchemes.RGB{Float64}}(
+    "SparsePFT" => COLOR_SCHEME[1],
+    "PFTDPW" => COLOR_SCHEME[2],
+    "POMCPOW" => COLOR_SCHEME[3],
+    "POMCP" => COLOR_SCHEME[4],
+    "AdaOPS" => COLOR_SCHEME[5]
+)
+
+const POMDP_NAMES = Dict{String, String}(
+    "baby" => "Baby",
+    "lightdark" => "LightDark",
+    "lasertag" => "LaserTag",
+    "subhunt" => "SubHunt",
+    "vdptag" => "VDPTag"
+)
 
 struct BenchmarkSummary
     title::String
     data::DataFrame
     solvers::Vector{String}
     times::Vector{Float64}
+end
+
+function Base.summary(b::BenchmarkSummary, t::Float64=1.0)
+    df = b.data
+    df = filter(:t => ==(t), df)
+    df = select(df, Not(:t))
+
+    min_score, max_score = extrema(df.mean)
+    score_range = max_score - min_score
+    ϵ = 0.1*score_range
+    min_score -= ϵ
+    score_range += ϵ
+    colors = @. (df.mean - min_score) / score_range
+
+    df[!,:color] = colors
+
+    return df
 end
 
 function BenchmarkSummary(path::String, title::String)
@@ -34,15 +77,8 @@ end
 
 function BenchmarkSummary(path::String)
     l_path = lowercase(path)
-    name_dict = Dict(
-        "baby" => "Baby",
-        "lightdark" => "LightDark",
-        "lasertag" => "LaserTag",
-        "subhunt" => "SubHunt",
-        "vdptag" => "VDPTag"
-    )
     title = "Benchmark"
-    for (k,v) in name_dict
+    for (k,v) in POMDP_NAMES
         if occursin(k,l_path)
             title = "$v Benchmark"
             break
@@ -80,25 +116,26 @@ function plot_ax!(f::GridPosition, b::BenchmarkSummary; ignore=[], ci::Number=2,
         limits = (0.01, 1.0, nothing, nothing),
         kwargs...
     )
-    color_dict = Dict{String, Symbol}(
-        "POMCPOW" => :blue,
-        "PFTDPW" => :orange,
-        "SparsePFT" => :green,
-        "POMCP" => :purple,
-        "AdaOPS" => :yellow
-    )
     line_arr = []
     for (i,(name, data)) in enumerate(df_data)
-        color = color_dict[name]
+        color = SOLVER_COLORS[name]
         t, μ, σ = sort_data(data)
-        l = lines!(t, μ, marker=:rect, color=color, linestyle=LINESTYLES[i])
-        b = band!(t, μ .- ci*σ, μ .+ ci*σ, color=(color,0.25))
+        l = lines!(
+            t, μ,
+            marker=:rect,
+            color=color,
+            linestyle=SOLVER_LINESTYLES[name]
+        )
+        b = band!(
+            t, μ .- ci*σ, μ .+ ci*σ,
+            color=(color,0.25)
+        )
         push!(line_arr, [l,b])
     end
     if legend
         axislegend(
             axis, line_arr, [first(t) for t in df_data],
-            position = :lt, labelsize=10, framevisible=true
+            position = :rb, labelsize=15, framevisible=true
         )
     end
     return axis

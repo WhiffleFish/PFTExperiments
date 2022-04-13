@@ -90,7 +90,7 @@ solvers = Tuple{Any, String, Dict{Symbol, Any}}[
 
 updater = BootstrapFilter(pomdp, 10_000)
 max_steps = 30
-N = 10
+N = 1000
 
 bb = BatchBenchmark(pomdp, times, solvers, updater, max_steps, N)
 

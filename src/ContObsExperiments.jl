@@ -2,16 +2,18 @@ module ContObsExperiments
 using POMDPs
 using POMDPSimulators
 using DataFrames
+using ColorSchemes
 using Random
 using CSV
 using Dates
+using CairoMakie
+using DataFrames
+using Statistics
 
 include("benchmark.jl")
 export BatchBenchmark, benchmark
 
-using CairoMakie
-using DataFrames
-using Statistics
+
 include("plot.jl")
 export BenchmarkSummary
 export SCRIPTS_PATH,
