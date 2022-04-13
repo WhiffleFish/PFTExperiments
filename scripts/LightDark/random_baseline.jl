@@ -9,6 +9,7 @@ Distributed.@everywhere begin
     using POMDPs
     using POMDPSimulators
     using POMDPPolicies
+    using ContObsExperiments.LightDark
 end
 
 using ContObsExperiments

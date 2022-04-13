@@ -40,18 +40,24 @@ struct BenchmarkSummary
     times::Vector{Float64}
 end
 
-function Base.summary(b::BenchmarkSummary, t::Float64=1.0)
+function table_data(b::BenchmarkSummary, t::Float64=1.0; baseline=nothing)
     df = b.data
     df = filter(:t => ==(t), df)
     df = select(df, Not(:t))
 
-    min_score, max_score = extrema(df.mean)
-    score_range = max_score - min_score
-    ϵ = 0.1*score_range
-    min_score -= ϵ
-    score_range += ϵ
-    colors = @. (df.mean - min_score) / score_range
+    if !isnothing(baseline)
+        min_score = baseline
+        max_score = maximum(df.mean)
+        score_range = max_score - min_score
+    else
+        min_score, max_score = extrema(df.mean)
+        score_range = max_score - min_score
+        ϵ = 0.1*score_range
+        min_score -= ϵ
+        score_range += ϵ
+    end
 
+    colors = @. (df.mean - min_score) / score_range
     df[!,:color] = colors
 
     return df

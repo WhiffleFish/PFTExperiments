@@ -33,25 +33,7 @@ save(joinpath(@__DIR__,"..","img","VDPTag_2021_07_15.svg"), f)
 
 ##
 using DataFrames
-summary(b1)
-t = 1.0
-df = b4.data
-df = filter(:t => ==(t), df)
-df = select(df, Not(:t))
-min_score, max_score = 11.09, 30.4
-score_range = max_score - min_score
-ϵ = 0.1*score_range
-min_score -= ϵ
-score_range += ϵ
-colors = @. (df.mean - min_score) / score_range
+using CSV
+baseline = DataFrame(CSV.File(COE.latest(LIGHTDARK_DATA_PATH, "random"))).reward |> mean
 
-colors
-
-df[!,:color] = colors
-df
-
-##
-using ColorSchemes
-
-m = ColorSchemes.Accent_6.colors
-m[1]
+COE.table_data(b2; baseline=baseline)
