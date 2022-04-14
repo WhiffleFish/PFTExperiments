@@ -10,6 +10,8 @@ using CairoMakie
 using DataFrames
 using Statistics
 
+const PROJECT_ROOT = pkgdir(ContObsExperiments)
+
 include("benchmark.jl")
 export BatchBenchmark, benchmark
 

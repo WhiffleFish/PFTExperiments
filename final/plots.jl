@@ -15,7 +15,7 @@ COE.plot_ax!(f[1,2], b2, ignore=["POMCP"]; legend=false, xlabel="", ylabel="")
 COE.plot_ax!(f[2,1], b3, ignore=["POMCP"]; legend=false)
 COE.plot_ax!(f[2,2], b4, ignore=["POMCP"]; legend=false, ylabel="")
 display(f)
-save(joinpath(@__DIR__,"..","img","all_plots.pdf"), f)
+save(joinpath(COE.PROJECT_ROOT,"img","all_plots.pdf"), f)
 
 ##
 f = COE.plot_data(b1, ignore=["POMCP"], ci=2)
@@ -32,8 +32,16 @@ save(joinpath(@__DIR__,"..","img","VDPTag_2021_07_15.svg"), f)
 
 
 ##
-using DataFrames
-using CSV
-baseline = DataFrame(CSV.File(COE.latest(LIGHTDARK_DATA_PATH, "random"))).reward |> mean
+COE.table_data(b4)
 
-COE.table_data(b2; baseline=baseline)
+#=
+f1 = COE.latest(SUBHUNT_DATA_PATH, "compare")
+f2 = joinpath(SUBHUNT_DATA_PATH, "compare_2021_09_30.csv")
+df1 = DataFrame(CSV.File(f1))
+
+df = COE.combinedf(f1, df1.sol |> unique, f2, ["POMCP"])
+
+CSV.write(f1, df)
+
+b1
+=#

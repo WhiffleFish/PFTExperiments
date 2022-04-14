@@ -1,27 +1,29 @@
 set_theme!(Theme(fontsize=21, font="Times New Roman"))
 
-const SCRIPTS_PATH = joinpath(@__DIR__, "..", "scripts")
+const SCRIPTS_PATH = joinpath(PROJECT_ROOT, "scripts")
 const BABY_DATA_PATH = joinpath(SCRIPTS_PATH, "Baby", "data")
 const LASERTAG_DATA_PATH = joinpath(SCRIPTS_PATH, "LaserTag", "data")
 const LIGHTDARK_DATA_PATH = joinpath(SCRIPTS_PATH, "LightDark", "data")
 const SUBHUNT_DATA_PATH = joinpath(SCRIPTS_PATH, "SubHunt", "data")
 const VDPTAG_DATA_PATH = joinpath(SCRIPTS_PATH, "VDPTag", "data")
 
-const COLOR_SCHEME = ColorSchemes.Accent_6.colors
-
 const SOLVER_LINESTYLES = Dict{String, Any}(
     "SparsePFT" => nothing,
     "PFTDPW" => :dash,
     "POMCPOW" => :dot,
-    "POMCP" => :dashdot,
-    "AdaOPS" => :dashdotdot
+    "AdaOPS" => :dashdotdot,
+    "POMCP" => :dashdot
 )
+
+const COLOR_SCHEME = ColorSchemes.rainbow[
+    range(0.0, 1.0, length=length(SOLVER_LINESTYLES))
+]
 
 const SOLVER_COLORS = Dict{String, ColorSchemes.RGB{Float64}}(
     "SparsePFT" => COLOR_SCHEME[1],
     "PFTDPW" => COLOR_SCHEME[2],
-    "POMCPOW" => COLOR_SCHEME[3],
-    "POMCP" => COLOR_SCHEME[4],
+    "POMCP" => COLOR_SCHEME[3],
+    "POMCPOW" => COLOR_SCHEME[4],
     "AdaOPS" => COLOR_SCHEME[5]
 )
 
@@ -40,7 +42,7 @@ struct BenchmarkSummary
     times::Vector{Float64}
 end
 
-function table_data(b::BenchmarkSummary, t::Float64=1.0; baseline=nothing)
+function table_data(b::BenchmarkSummary, t::Float64=1.0; baseline=nothing, eps=0.0)
     df = b.data
     df = filter(:t => ==(t), df)
     df = select(df, Not(:t))
@@ -52,7 +54,7 @@ function table_data(b::BenchmarkSummary, t::Float64=1.0; baseline=nothing)
     else
         min_score, max_score = extrema(df.mean)
         score_range = max_score - min_score
-        ϵ = 0.1*score_range
+        ϵ = eps*score_range
         min_score -= ϵ
         score_range += ϵ
     end
@@ -134,7 +136,7 @@ function plot_ax!(f::GridPosition, b::BenchmarkSummary; ignore=[], ci::Number=2,
         )
         b = band!(
             t, μ .- ci*σ, μ .+ ci*σ,
-            color=(color,0.25)
+            color=(color,0.10)
         )
         push!(line_arr, [l,b])
     end
