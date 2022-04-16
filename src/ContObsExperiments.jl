@@ -29,4 +29,6 @@ include(joinpath("LightDark", "LightDark.jl"))
 
 include("combine.jl")
 
+include("evaluate.jl")
+
 end

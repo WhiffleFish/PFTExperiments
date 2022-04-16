@@ -19,16 +19,16 @@ save(joinpath(COE.PROJECT_ROOT,"img","all_plots.pdf"), f)
 
 ##
 f = COE.plot_data(b1, ignore=["POMCP"], ci=2)
-save(joinpath(@__DIR__,"..","img","LaserTag_2021_07_15.svg"), f)
+save(joinpath(COE.PROJECT_ROOT,"img","LaserTag_2021_07_15.svg"), f)
 
 f = COE.plot_data(b2, ignore=["POMCP"], ci=2)
-save(joinpath(@__DIR__,"..","img","LightDark_2021_07_15.svg"), f)
+save(joinpath(COE.PROJECT_ROOT,"img","LightDark_2021_07_15.svg"), f)
 
 f = COE.plot_data(b3, ignore=["POMCP"], ci=2)
-save(joinpath(@__DIR__,"..","img","Subhunt_2021_07_15.svg"), f)
+save(joinpath(COE.PROJECT_ROOT,"img","Subhunt_2021_07_15.svg"), f)
 
 f = COE.plot_data(b4, ignore=["POMCP"], ci=2)
-save(joinpath(@__DIR__,"..","img","VDPTag_2021_07_15.svg"), f)
+save(joinpath(COE.PROJECT_ROOT,"img","VDPTag_2021_07_15.svg"), f)
 
 
 ##
@@ -45,3 +45,12 @@ CSV.write(f1, df)
 
 b1
 =#
+
+using DataFrames
+using Statistics
+using CSV
+
+df = COE.latest(COE.SUBHUNT_DATA_PATH, "random") |> CSV.File |> DataFrame
+mean(df.reward)
+std(df.reward) / sqrt(length(df.reward))
+# wtf is POMCP actually doing in VDPTag???
