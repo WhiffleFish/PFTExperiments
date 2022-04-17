@@ -9,6 +9,8 @@ using Dates
 using CairoMakie
 using DataFrames
 using Statistics
+using FileIO
+using Hyperopt
 
 const PROJECT_ROOT = pkgdir(ContObsExperiments)
 
