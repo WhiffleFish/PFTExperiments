@@ -11,6 +11,7 @@ using DataFrames
 using Statistics
 using FileIO
 using Hyperopt
+using ArgParse
 
 const PROJECT_ROOT = pkgdir(ContObsExperiments)
 
@@ -32,5 +33,7 @@ include(joinpath("LightDark", "LightDark.jl"))
 include("combine.jl")
 
 include("evaluate.jl")
+
+include("argparse.jl")
 
 end
