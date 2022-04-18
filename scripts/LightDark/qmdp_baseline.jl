@@ -3,7 +3,7 @@ using CSV
 using Dates
 using Random
 
-worker_ids = Distributed.addprocs(10; exeflags="--project")
+worker_ids = Distributed.addprocs(2; exeflags="--project")
 
 Distributed.@everywhere begin
     using POMDPs
@@ -18,7 +18,7 @@ using ContObsExperiments
 pomdp = LightDark.LightDarkPOMDP()
 
 max_steps = 30
-N = 1000
+N = 5000
 
 sol = QMDPSolver()
 policy = solve(sol, pomdp)

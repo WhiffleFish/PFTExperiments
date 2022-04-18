@@ -10,7 +10,7 @@ using ContObsExperiments
 const COE = ContObsExperiments
 using Plots
 
-ho = COE.restore(joinpath(@__DIR__, "data", "POMCPOW.jld2"))
+ho = COE.restore(joinpath(@__DIR__, "data", "AdaOPS.jld2"))
 plot(ho)
 @show ho.maximizer
 

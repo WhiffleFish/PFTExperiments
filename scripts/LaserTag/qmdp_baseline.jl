@@ -3,7 +3,7 @@ using CSV
 using Dates
 using Random
 
-worker_ids = Distributed.addprocs(10; exeflags="--project")
+worker_ids = Distributed.addprocs(2; exeflags="--project")
 
 Distributed.@everywhere begin
     using POMDPs
@@ -11,6 +11,8 @@ Distributed.@everywhere begin
     using POMDPPolicies
     using LaserTag
     using QMDP
+    using Distributions
+    Distributions.support(::LaserTag.LTInitialBelief) = states(gen_lasertag())
 end
 
 using ContObsExperiments
