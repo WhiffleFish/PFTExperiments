@@ -4,7 +4,9 @@ using Distributed
 using Hyperopt
 using FileIO, JLD2
 
-p = addprocs(39;exeflags="--project")
+args = COE.parse_commandline()
+
+p = addprocs(args["addprocs"]; exeflags="--project")
 
 @info "POMCPOW Discrete VDP Tag Hyperopt"
 @show length(procs())
@@ -16,13 +18,14 @@ p = addprocs(39;exeflags="--project")
     using POMCPOW
     using ParticleFilters
     using POMDPs
+    POMDPs.initialstate(p::ADiscreteVDPTagPOMDP) = initialstate(p.cpomdp)
 end
 
 
-const ITER = 100
+const ITER = args["iter"]
 
 params = COE.OptParams(
-    PFTDPWSolver,
+    POMCPOWSolver,
     ADiscreteVDPTagPOMDP(n_angles=20),
     250,
     BootstrapFilter(ADiscreteVDPTagPOMDP(n_angles=20), 10_000),

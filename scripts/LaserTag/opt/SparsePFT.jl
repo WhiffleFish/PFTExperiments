@@ -4,7 +4,9 @@ using Distributed
 using Hyperopt
 using FileIO, JLD2
 
-p = addprocs(39;exeflags="--project")
+args = COE.parse_commandline()
+
+p = addprocs(args["addprocs"]; exeflags="--project")
 
 @info "SparsePFT Discrete VDP Tag Hyperopt"
 @show length(procs())
@@ -12,17 +14,19 @@ p = addprocs(39;exeflags="--project")
 @everywhere begin
     using Pkg
     Pkg.activate(".")
-    using VDPTag2
+    using LaserTag
     using PFTDPW
     using ParticleFilters
     using POMDPs
+    using QMDP
 end
 
+PO_VE = PFTDPW.PORollout(QMDPSolver(); n_rollouts=1)
 
-const ITER = 100
+const ITER = args["iter"]
 
 params = COE.OptParams(
-    SparsePFTSolver,
+    PFTDPWSolver,
     gen_lasertag(),
     250,
     BootstrapFilter(gen_lasertag(), 10_000),
@@ -42,12 +46,14 @@ ho = @hyperopt for i=ITER,
     COE.evaluate(
         params;
         verbose = true,
+        value_estimator = PO_VE,
         enable_action_pw = false,
         check_repeat_obs = false,
         tree_queries = 100_000,
         max_time     = 0.1,
         max_depth    = round(Int,_max_depth),
         k_o          = _k_o,
+        alpha_o      = 0.0,
         c            = _c,
         n_particles  = round(Int, _n_particles)
     )

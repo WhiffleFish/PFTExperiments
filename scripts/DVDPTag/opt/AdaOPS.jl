@@ -4,7 +4,9 @@ using Distributed
 using Hyperopt
 using FileIO, JLD2
 
-p = addprocs(39;exeflags="--project")
+args = COE.parse_commandline()
+
+p = addprocs(args["addprocs"]; exeflags="--project")
 
 @info "AdaOPS Discrete VDP Tag Hyperopt"
 @show length(procs())
@@ -16,11 +18,20 @@ p = addprocs(39;exeflags="--project")
     using AdaOPS
     using ParticleFilters
     using POMDPs
+    using POMDPPolicies
     using BasicPOMCP
+    POMDPs.initialstate(p::ADiscreteVDPTagPOMDP) = initialstate(p.cpomdp)
+
+    # AdaOPS calls observation(pomdp, a, sp) on setup just to get type of obs dist
+    is = initialstate(ADiscreteVDPTagPOMDP())
+    s = rand(is)
+    a = rand(actions(ADiscreteVDPTagPOMDP()))
+    sp = rand(is)
+    POMDPs.observation(p::ADiscreteVDPTagPOMDP, a::Int, sp::TagState) = POMDPs.observation(p, s, a, sp)
 end
 
 
-const ITER = 100
+const ITER = args["iter"]
 
 params = COE.OptParams(
     AdaOPSSolver,
@@ -38,10 +49,12 @@ ho = @hyperopt for i=ITER,
     println("$i / $ITER")
     COE.evaluate(
         params;
+        timeout_warning_threshold = Inf,
+        T_max = 0.1,
         bounds = AdaOPS.IndependentBounds(
             BasicPOMCP.FORollout(RandomSolver()),
             1e6),
-        m_min = _m_min,
+        m_min = round(Int,_m_min),
         delta = _δ
     )
 end

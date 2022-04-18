@@ -4,7 +4,9 @@ using Distributed
 using Hyperopt
 using FileIO, JLD2
 
-p = addprocs(39;exeflags="--project")
+args = COE.parse_commandline()
+
+p = addprocs(args["addprocs"]; exeflags="--project")
 
 @info "POMCPOW Discrete VDP Tag Hyperopt"
 @show length(procs())
@@ -12,17 +14,17 @@ p = addprocs(39;exeflags="--project")
 @everywhere begin
     using Pkg
     Pkg.activate(".")
-    using VDPTag2
+    using LaserTag
     using POMCPOW
     using ParticleFilters
     using POMDPs
 end
 
 
-const ITER = 100
+const ITER = args["iter"]
 
 params = COE.OptParams(
-    SparsePFTSolver,
+    POMCPOWSolver,
     gen_lasertag(),
     250,
     BootstrapFilter(gen_lasertag(), 10_000),

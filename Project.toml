@@ -5,6 +5,7 @@ version = "0.1.0"
 
 [deps]
 AdaOPS = "eadfb9d8-44f1-454c-a5eb-0663ee7d74a1"
+ArgParse = "c7e460c6-2fb9-53a9-8c5b-16f535851c63"
 BasicPOMCP = "d721219e-3fc6-5570-a8ef-e5402f47c49e"
 BeliefUpdaters = "8bb6e9a1-7d73-552c-a44a-e5dc5634aac4"
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"

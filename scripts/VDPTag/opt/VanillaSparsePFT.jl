@@ -4,7 +4,9 @@ using Distributed
 using Hyperopt
 using FileIO, JLD2
 
-p = addprocs(19;exeflags="--project")
+args = COE.parse_commandline()
+
+p = addprocs(args[:addprocs]; exeflags="--project")
 
 @show length(procs())
 
@@ -17,8 +19,7 @@ p = addprocs(19;exeflags="--project")
     using POMDPs
 end
 
-
-const ITER = 100
+const ITER = args[:iter]
 
 params = COE.OptParams(
     SparsePFTSolver,

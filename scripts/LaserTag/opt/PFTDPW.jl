@@ -4,7 +4,9 @@ using Distributed
 using Hyperopt
 using FileIO, JLD2
 
-p = addprocs(39;exeflags="--project")
+args = COE.parse_commandline()
+
+p = addprocs(args["addprocs"]; exeflags="--project")
 
 @info "PFTDPW Discrete VDP Tag Hyperopt"
 @show length(procs())
@@ -12,17 +14,19 @@ p = addprocs(39;exeflags="--project")
 @everywhere begin
     using Pkg
     Pkg.activate(".")
-    using VDPTag2
+    using LaserTag
     using PFTDPW
     using ParticleFilters
     using POMDPs
+    using QMDP
 end
 
+PO_VE = PFTDPW.PORollout(QMDPSolver(); n_rollouts=1)
 
-const ITER = 100
+const ITER = args["iter"]
 
 params = COE.OptParams(
-    SparsePFTSolver,
+    PFTDPWSolver,
     gen_lasertag(),
     250,
     BootstrapFilter(gen_lasertag(), 10_000),
@@ -33,16 +37,17 @@ ho = @hyperopt for i=ITER,
             sampler         = CLHSampler(
                                 dims=[Continuous(), Continuous(), Continuous(),
                                       Continuous(), Continuous()]),
-            _max_depth      = range(5,  50,  length=ITER),
-            _k_o            = range(2,  30,  length=ITER),
-            _α_o            = range(1e-2, 5e-1,  length=ITER),
-            _c              = range(1,  100, length=ITER),
-            _n_particles    = range(10, 500, length=ITER)
+            _max_depth      = range(5,   50,    length=ITER),
+            _k_o            = range(2,   30,    length=ITER),
+            _α_o            = range(1e-2,5e-1,  length=ITER),
+            _c              = range(1,   100,   length=ITER),
+            _n_particles    = range(10,  500,   length=ITER)
 
     println("$i / $ITER")
     COE.evaluate(
         params;
         verbose = true,
+        value_estimator = PO_VE,
         enable_action_pw = false,
         check_repeat_obs = false
         tree_queries = 100_000,

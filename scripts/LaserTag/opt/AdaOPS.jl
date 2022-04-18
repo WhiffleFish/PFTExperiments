@@ -4,7 +4,9 @@ using Distributed
 using Hyperopt
 using FileIO, JLD2
 
-p = addprocs(39;exeflags="--project")
+args = COE.parse_commandline()
+
+p = addprocs(args["addprocs"]; exeflags="--project")
 
 @info "AdaOPS Discrete VDP Tag Hyperopt"
 @show length(procs())
@@ -12,7 +14,7 @@ p = addprocs(39;exeflags="--project")
 @everywhere begin
     using Pkg
     Pkg.activate(".")
-    using VDPTag2
+    using LaserTag
     using AdaOPS
     using ParticleFilters
     using POMDPs
@@ -20,7 +22,7 @@ p = addprocs(39;exeflags="--project")
 end
 
 
-const ITER = 100
+const ITER = args["iter"]
 
 params = COE.OptParams(
     SparsePFTSolver,
@@ -38,9 +40,12 @@ ho = @hyperopt for i=ITER,
     println("$i / $ITER")
     COE.evaluate(
         params;
+        timeout_warning_threshold = Inf,
+        T_max = 0.1,
         bounds = AdaOPS.IndependentBounds(
             BasicPOMCP.FORollout(RandomSolver()),
-            1e6),
+            AdaOPS.POValue(QMDPSolver()),
+            check_terminal = true),
         m_min = _m_min,
         delta = _δ
     )
