@@ -18,7 +18,6 @@ p = addprocs(args["addprocs"]; exeflags="--project")
     using PFTDPW
     using ParticleFilters
     using POMDPs
-    POMDPs.initialstate(p::ADiscreteVDPTagPOMDP) = initialstate(p.cpomdp)
 end
 
 
