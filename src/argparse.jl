@@ -1,7 +1,7 @@
 function parse_commandline()
     s = ArgParseSettings()
 
-    @add_arg_table s begin
+    @add_arg_table! s begin
         "--test"
             help = "run file test procedure (2 procs, 3 iters)"
             action = :store_true

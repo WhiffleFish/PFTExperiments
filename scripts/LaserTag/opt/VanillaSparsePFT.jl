@@ -8,7 +8,7 @@ args = COE.parse_commandline()
 
 p = addprocs(args["addprocs"]; exeflags="--project")
 
-@info "Vanilla SparsePFT Discrete VDP Tag Hyperopt"
+@info "Vanilla SparsePFT LaserTag Hyperopt"
 @show length(procs())
 
 @everywhere begin
@@ -19,6 +19,7 @@ p = addprocs(args["addprocs"]; exeflags="--project")
     using ParticleFilters
     using POMDPs
     using QMDP
+    const pomdp = gen_lasertag()
 end
 
 
@@ -26,9 +27,9 @@ const ITER = args["iter"]
 
 params = COE.OptParams(
     SparsePFTSolver,
-    gen_lasertag(),
+    pomdp,
     250,
-    BootstrapFilter(gen_lasertag(), 10_000),
+    BootstrapFilter(pomdp, 10_000),
     20
 )
 
@@ -44,9 +45,10 @@ ho = @hyperopt for i=ITER,
             _n_particles    = range(10, 500, length=ITER)
 
     println("$i / $ITER")
+    @show _max_depth _k_o _c _n_particles
     COE.evaluate(
         params;
-        action_selector = qmdp
+        action_selector = qmdp,
         verbose = true,
         enable_action_pw = false,
         tree_queries = 100_000,

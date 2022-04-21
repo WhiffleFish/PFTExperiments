@@ -50,7 +50,11 @@ using DataFrames
 using Statistics
 using CSV
 
-df = COE.latest(COE.SUBHUNT_DATA_PATH, "random") |> CSV.File |> DataFrame
-mean(df.reward)
+df = COE.latest(COE.SUBHUNT_DATA_PATH, "qmdp") |> CSV.File |> DataFrame
+m = mean(df.reward)
 std(df.reward) / sqrt(length(df.reward))
-# wtf is POMCP actually doing in VDPTag???
+# wtf is POMCP actually doing in VDPTag??? -> random default action
+
+m_min = -14.86
+m_max = 61.7
+(m - m_min) / (m_max - m_min)

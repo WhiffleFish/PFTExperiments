@@ -8,7 +8,7 @@ args = COE.parse_commandline()
 
 p = addprocs(args["addprocs"]; exeflags="--project")
 
-@info "POMCPOW Discrete VDP Tag Hyperopt"
+@info "POMCPOW LaserTag Hyperopt"
 @show length(procs())
 
 @everywhere begin
@@ -18,6 +18,7 @@ p = addprocs(args["addprocs"]; exeflags="--project")
     using POMCPOW
     using ParticleFilters
     using POMDPs
+    const pomdp = gen_lasertag()
 end
 
 
@@ -25,9 +26,9 @@ const ITER = args["iter"]
 
 params = COE.OptParams(
     POMCPOWSolver,
-    gen_lasertag(),
+    pomdp,
     250,
-    BootstrapFilter(gen_lasertag(), 10_000),
+    BootstrapFilter(pomdp, 10_000),
     20
 )
 

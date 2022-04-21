@@ -8,7 +8,7 @@ args = COE.parse_commandline()
 
 p = addprocs(args["addprocs"]; exeflags="--project")
 
-@info "SparsePFT Discrete VDP Tag Hyperopt"
+@info "SparsePFT LaserTag Hyperopt"
 @show length(procs())
 
 @everywhere begin
@@ -19,6 +19,7 @@ p = addprocs(args["addprocs"]; exeflags="--project")
     using ParticleFilters
     using POMDPs
     using QMDP
+    const pomdp = gen_lasertag()
 end
 
 PO_VE = PFTDPW.PORollout(QMDPSolver(); n_rollouts=1)
@@ -27,9 +28,9 @@ const ITER = args["iter"]
 
 params = COE.OptParams(
     PFTDPWSolver,
-    gen_lasertag(),
+    pomdp,
     250,
-    BootstrapFilter(gen_lasertag(), 10_000),
+    BootstrapFilter(pomdp, 10_000),
     20
 )
 

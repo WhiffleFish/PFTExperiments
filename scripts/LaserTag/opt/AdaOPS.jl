@@ -8,7 +8,7 @@ args = COE.parse_commandline()
 
 p = addprocs(args["addprocs"]; exeflags="--project")
 
-@info "AdaOPS Discrete VDP Tag Hyperopt"
+@info "AdaOPS LaserTag Hyperopt"
 @show length(procs())
 
 @everywhere begin
@@ -19,16 +19,19 @@ p = addprocs(args["addprocs"]; exeflags="--project")
     using ParticleFilters
     using POMDPs
     using BasicPOMCP
+    using POMDPPolicies
+    using QMDP
+    const pomdp = gen_lasertag()
 end
 
 
 const ITER = args["iter"]
 
 params = COE.OptParams(
-    SparsePFTSolver,
-    gen_lasertag(),
+    AdaOPSSolver,
+    pomdp,
     250,
-    BootstrapFilter(gen_lasertag(), 10_000),
+    BootstrapFilter(pomdp, 10_000),
     20
 )
 
