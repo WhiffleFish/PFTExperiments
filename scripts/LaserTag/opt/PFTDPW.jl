@@ -17,9 +17,12 @@ p = addprocs(args["addprocs"]; exeflags="--project")
     using LaserTag
     using PFTDPW
     using ParticleFilters
+    using BeliefUpdaters
     using POMDPs
     using QMDP
     const pomdp = gen_lasertag()
+    import Distributions
+    Distributions.support(::LaserTag.LTInitialBelief) = states(pomdp)
 end
 
 PO_VE = PFTDPW.PORollout(QMDPSolver(); n_rollouts=1)
@@ -30,7 +33,7 @@ params = COE.OptParams(
     PFTDPWSolver,
     pomdp,
     250,
-    BootstrapFilter(pomdp, 10_000),
+    DiscreteUpdater(pomdp),
     20
 )
 

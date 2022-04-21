@@ -17,11 +17,14 @@ p = addprocs(args["addprocs"]; exeflags="--project")
     using LaserTag
     using AdaOPS
     using ParticleFilters
+    using BeliefUpdaters
     using POMDPs
     using BasicPOMCP
     using POMDPPolicies
     using QMDP
     const pomdp = gen_lasertag()
+    import Distributions
+    Distributions.support(::LaserTag.LTInitialBelief) = states(pomdp)
 end
 
 
@@ -31,7 +34,7 @@ params = COE.OptParams(
     AdaOPSSolver,
     pomdp,
     250,
-    BootstrapFilter(pomdp, 10_000),
+    DiscreteUpdater(pomdp),
     20
 )
 
@@ -49,7 +52,7 @@ ho = @hyperopt for i=ITER,
             BasicPOMCP.FORollout(RandomSolver()),
             AdaOPS.POValue(QMDPSolver()),
             check_terminal = true),
-        m_min = _m_min,
+        m_min = round(Int,_m_min),
         delta = _δ
     )
 end
