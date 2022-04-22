@@ -12,24 +12,20 @@ p = addprocs(args["addprocs"]; exeflags="--project")
 @show length(procs())
 
 Distributed.@everywhere begin
-    using POMDPs
-    using POMDPSimulators
+    using POMDPs, POMDPSimulators, POMDPPolicies
     using ParticleFilters
     using PFTDPW, POMCPOW, BasicPOMCP, AdaOPS
     using VDPTag2
 
+    const pomdp = ADiscreteVDPTagPOMDP(n_angles=20)
     # AdaOPS calls observation(pomdp, a, sp) on setup just to get type of obs dist
-    is = initialstate(ADiscreteVDPTagPOMDP())
+    is = initialstate(pomdp)
     s = rand(is)
-    a = rand(actions(ADiscreteVDPTagPOMDP()))
+    a = rand(actions(pomdp))
     sp = rand(is)
     POMDPs.observation(p::ADiscreteVDPTagPOMDP, a::Int, sp::TagState) = POMDPs.observation(p, s, a, sp)
 end
 
-using ContObsExperiments
-
-
-pomdp = ADiscreteVDPTagPOMDP(n_angles=20)
 times = 10.0 .^ (-2:0.25:0)
 PFTDPW_params = Dict{Symbol,Any}(
     :c => 47.0,
@@ -43,13 +39,11 @@ PFTDPW_params = Dict{Symbol,Any}(
 )
 
 SparsePFT_params = Dict{Symbol,Any}(
-    :c => 70.0,
-    :k_o => 8.0,
-    :k_a => 20.0,
+    :c => 61.0,
+    :k_o => 10.0,
     :alpha_o => 1/10,
-    :alpha_a => 0.0,
-    :n_particles => 20,
-    :max_depth => 10,
+    :n_particles => 240,
+    :max_depth => 12,
     :tree_queries => 1_000_000,
     :check_repeat_obs => false,
     :enable_action_pw => false

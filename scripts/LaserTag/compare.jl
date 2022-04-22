@@ -78,7 +78,7 @@ AdaOPS_params = Dict{Symbol, Any}(
     :default_action => (args...) -> rand(actions(pomdp))
 )
 
-solvers = Tuple{Any, String, Dict{Symbol, Any}}[
+solvers = [
     # (PFTDPWSolver,"PFTDPW", PFTDPW_params),
     # (PFTDPWSolver,"SparsePFT", SparsePFT_params)
     # (POMCPOWSolver, "POMCPOW", POMCPOW_params),

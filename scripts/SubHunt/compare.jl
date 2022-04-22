@@ -76,7 +76,7 @@ AdaOPS_params = Dict{Symbol, Any}(
     :default_action => (args...) -> rand(actions(pomdp))
 )
 
-solvers = Tuple{Any, String, Dict{Symbol, Any}}[
+solvers = [
     # (PFTDPWSolver,"PFTDPW", PFTDPW_params),
     # (PFTDPWSolver,"SparsePFT", SparsePFT_params)
     # (POMCPOWSolver, "POMCPOW", POMCPOW_params),
@@ -86,7 +86,7 @@ solvers = Tuple{Any, String, Dict{Symbol, Any}}[
 
 updater = BootstrapFilter(pomdp, 100_000)
 max_steps = 100
-N = 5000
+N = 1000
 
 bb = BatchBenchmark(pomdp, times, solvers, updater, max_steps, N)
 
