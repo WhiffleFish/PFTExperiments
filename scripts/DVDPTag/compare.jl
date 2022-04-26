@@ -8,7 +8,6 @@ args = COE.parse_commandline()
 
 p = addprocs(args["addprocs"]; exeflags="--project")
 
-@info "PFTDPW Discrete VDP Tag Hyperopt"
 @show length(procs())
 
 Distributed.@everywhere begin
@@ -85,7 +84,7 @@ bb = BatchBenchmark(pomdp, times, solvers, updater, max_steps, N)
 
 df = benchmark(bb)
 
-rmprocs(worker_ids)
+rmprocs(p)
 
 date_str = Dates.format(now(), "_yyyy_mm_dd")
 filename = "compare"*date_str*".csv"

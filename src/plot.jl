@@ -2,6 +2,7 @@ set_theme!(Theme(fontsize=21, font="Times New Roman"))
 
 const SCRIPTS_PATH = joinpath(PROJECT_ROOT, "scripts")
 const BABY_DATA_PATH = joinpath(SCRIPTS_PATH, "Baby", "data")
+const DVDPTAG_DATA_PATH = joinpath(SCRIPTS_PATH, "DVDPTag", "data")
 const LASERTAG_DATA_PATH = joinpath(SCRIPTS_PATH, "LaserTag", "data")
 const LIGHTDARK_DATA_PATH = joinpath(SCRIPTS_PATH, "LightDark", "data")
 const SUBHUNT_DATA_PATH = joinpath(SCRIPTS_PATH, "SubHunt", "data")

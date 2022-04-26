@@ -8,6 +8,7 @@ b1 = BenchmarkSummary(COE.latest(LASERTAG_DATA_PATH, "compare"))
 b2 = BenchmarkSummary(COE.latest(LIGHTDARK_DATA_PATH, "compare"))
 b3 = BenchmarkSummary(COE.latest(SUBHUNT_DATA_PATH, "compare"))
 b4 = BenchmarkSummary(COE.latest(VDPTAG_DATA_PATH, "compare"))
+b5 = BenchmarkSummary(COE.latest(DVDPTAG_DATA_PATH, "compare"))
 
 f = Figure()
 COE.plot_ax!(f[1,1], b1, ignore=["POMCP"]; legend=true, xlabel="")
@@ -30,6 +31,8 @@ save(joinpath(COE.PROJECT_ROOT,"img","Subhunt_2021_07_15.svg"), f)
 f = COE.plot_data(b4, ignore=["POMCP"], ci=2)
 save(joinpath(COE.PROJECT_ROOT,"img","VDPTag_2021_07_15.svg"), f)
 
+f = COE.plot_data(b5, ignore=["POMCP"], ci=2)
+save(joinpath(COE.PROJECT_ROOT,"img","DVDPTag_2021_07_15.svg"), f)
 
 ##
 COE.table_data(b4)

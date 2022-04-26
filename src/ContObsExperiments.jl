@@ -26,6 +26,7 @@ export SCRIPTS_PATH,
     LASERTAG_DATA_PATH,
     LIGHTDARK_DATA_PATH,
     SUBHUNT_DATA_PATH,
+    DVDPTAG_DATA_PATH,
     VDPTAG_DATA_PATH
 
 include(joinpath("LightDark", "LightDark.jl"))
