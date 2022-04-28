@@ -32,10 +32,20 @@ f = COE.plot_data(b4, ignore=["POMCP"], ci=2)
 save(joinpath(COE.PROJECT_ROOT,"img","VDPTag_2021_07_15.svg"), f)
 
 f = COE.plot_data(b5, ignore=["POMCP"], ci=2)
-save(joinpath(COE.PROJECT_ROOT,"img","DVDPTag_2021_07_15.svg"), f)
+save(joinpath(COE.PROJECT_ROOT,"img","DVDPTag_2022_04_27.svg"), f)
 
 ##
-COE.table_data(b4)
+COE.table_data(b5)
+
+
+
+sort(filter(:sol => ==("SparsePFT"), b5.data), :t)
+sort(filter(:sol => ==("PFTDPW"), b5.data), :t)
+
+sort(filter(:sol => ==("POMCPOW"), b5.data), :t)
+
+
+(2.0 - -66.8) / (24.5 - -66.8)
 
 #=
 f1 = COE.latest(SUBHUNT_DATA_PATH, "compare")
@@ -54,7 +64,7 @@ using Statistics
 using CSV
 
 df = COE.latest(COE.SUBHUNT_DATA_PATH, "qmdp") |> CSV.File |> DataFrame
-m = mean(df.reward)
+m = mean(df.r)
 std(df.reward) / sqrt(length(df.reward))
 # wtf is POMCP actually doing in VDPTag??? -> random default action
 

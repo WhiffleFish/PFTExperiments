@@ -21,11 +21,11 @@ const COLOR_SCHEME = if length(SOLVER_LINESTYLES) > 5
     range(0.0, 1.0, length=length(SOLVER_LINESTYLES))]
 else
     [
-    ColorSchemes.RGB(202/255,0/255,230/255),
-    ColorSchemes.RGB(230/255,105/255,23/255),
-    ColorSchemes.RGB(0/255,11/255,230/255),
-    ColorSchemes.RGB(126/255,230/255,23/255),
-    ColorSchemes.RGB(0/255,217/255,230/255)
+    ColorSchemes.RGB(202/255, 000/255, 230/255),
+    ColorSchemes.RGB(230/255, 105/255, 023/255),
+    ColorSchemes.RGB(000/255, 011/255, 230/255),
+    ColorSchemes.RGB(126/255, 230/255, 023/255),
+    ColorSchemes.RGB(000/255, 217/255, 230/255)
     ]
 end
 

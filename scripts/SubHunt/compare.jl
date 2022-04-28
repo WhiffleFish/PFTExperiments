@@ -38,8 +38,8 @@ PFTDPW_params = Dict{Symbol,Any}(
 
 SparsePFT_params = Dict{Symbol,Any}(
     :c => 100.0,
-    :k_o => 2.0,
-    :alpha_o => 1/10,
+    :k_o => 5.0,
+    :alpha_o => 0.0,
     :n_particles => 20,
     :max_depth => 50,
     :tree_queries => 1_000_000,
@@ -78,10 +78,10 @@ AdaOPS_params = Dict{Symbol, Any}(
 
 solvers = [
     # (PFTDPWSolver,"PFTDPW", PFTDPW_params),
-    # (PFTDPWSolver,"SparsePFT", SparsePFT_params)
+    (PFTDPWSolver,"SparsePFT", SparsePFT_params)
     # (POMCPOWSolver, "POMCPOW", POMCPOW_params),
     # (POMCPSolver, "POMCP", POMCP_params)
-    (AdaOPSSolver, "AdaOPS", AdaOPS_params)
+    # (AdaOPSSolver, "AdaOPS", AdaOPS_params)
 ]
 
 updater = BootstrapFilter(pomdp, 100_000)
