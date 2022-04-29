@@ -1,22 +1,22 @@
 set_theme!(Theme(fontsize=21, font="Times New Roman"))
 
-const SCRIPTS_PATH = joinpath(PROJECT_ROOT, "scripts")
-const BABY_DATA_PATH = joinpath(SCRIPTS_PATH, "Baby", "data")
-const DVDPTAG_DATA_PATH = joinpath(SCRIPTS_PATH, "DVDPTag", "data")
-const LASERTAG_DATA_PATH = joinpath(SCRIPTS_PATH, "LaserTag", "data")
-const LIGHTDARK_DATA_PATH = joinpath(SCRIPTS_PATH, "LightDark", "data")
-const SUBHUNT_DATA_PATH = joinpath(SCRIPTS_PATH, "SubHunt", "data")
-const VDPTAG_DATA_PATH = joinpath(SCRIPTS_PATH, "VDPTag", "data")
+const SCRIPTS_PATH          = joinpath(PROJECT_ROOT, "scripts")
+const BABY_DATA_PATH        = joinpath(SCRIPTS_PATH, "Baby", "data")
+const DVDPTAG_DATA_PATH     = joinpath(SCRIPTS_PATH, "DVDPTag", "data")
+const LASERTAG_DATA_PATH    = joinpath(SCRIPTS_PATH, "LaserTag", "data")
+const LIGHTDARK_DATA_PATH   = joinpath(SCRIPTS_PATH, "LightDark", "data")
+const SUBHUNT_DATA_PATH     = joinpath(SCRIPTS_PATH, "SubHunt", "data")
+const VDPTAG_DATA_PATH      = joinpath(SCRIPTS_PATH, "VDPTag", "data")
 
 const SOLVER_LINESTYLES = Dict{String, Any}(
     "SparsePFT" => nothing,
-    "PFTDPW" => :dash,
-    "POMCPOW" => :dot,
-    "AdaOPS" => :dashdotdot,
-    "POMCP" => :dashdot
+    "PFTDPW"    => :dash,
+    "POMCPOW"   => :dot,
+    "AdaOPS"    => :dashdotdot,
+    "POMCP"     => :dashdot
 )
 
-const COLOR_SCHEME = if length(SOLVER_LINESTYLES) > 5
+const COLOR_SCHEME = if length(SOLVER_LINESTYLES) > 1
     ColorSchemes.rainbow[
     range(0.0, 1.0, length=length(SOLVER_LINESTYLES))]
 else
@@ -31,18 +31,18 @@ end
 
 const SOLVER_COLORS = Dict{String, ColorSchemes.RGB{Float64}}(
     "SparsePFT" => COLOR_SCHEME[1],
-    "PFTDPW" => COLOR_SCHEME[2],
-    "POMCP" => COLOR_SCHEME[3],
-    "POMCPOW" => COLOR_SCHEME[4],
-    "AdaOPS" => COLOR_SCHEME[5]
+    "PFTDPW"    => COLOR_SCHEME[2],
+    "POMCP"     => COLOR_SCHEME[3],
+    "POMCPOW"   => COLOR_SCHEME[4],
+    "AdaOPS"    => COLOR_SCHEME[5]
 )
 
 const POMDP_NAMES = Dict{String, String}(
-    "baby" => "Baby",
+    "baby"      => "Baby",
     "lightdark" => "LightDark",
-    "lasertag" => "LaserTag",
-    "subhunt" => "SubHunt",
-    "vdptag" => "VDPTag"
+    "lasertag"  => "LaserTag",
+    "subhunt"   => "SubHunt",
+    "vdptag"    => "VDPTag"
 )
 
 struct BenchmarkSummary
@@ -79,14 +79,13 @@ function BenchmarkSummary(path::String, title::String)
     df = DataFrame(CSV.File(path))
     times = unique(df.t)
     solvers = unique(df.sol)
-    N = first(size(df))/(length(solvers)*length(times))
 
     plot_df = DataFrame(sol=String[], t=Float64[], mean=Float64[], stder=Float64[])
     for sol in solvers
         for t in times
             data = df[(df.sol .== sol) .* (df.t .≈  t), :].r
             mean = Statistics.mean(data)
-            stder = Statistics.std(data)/sqrt(N)
+            stder = Statistics.std(data)/sqrt(length(data))
             push!(plot_df, [sol, t, mean, stder])
         end
     end
@@ -98,7 +97,7 @@ function BenchmarkSummary(path::String)
     title = "Benchmark"
     for (k,v) in POMDP_NAMES
         if occursin(k,l_path)
-            title = "$v Benchmark"
+            title = v
             break
         end
     end
@@ -114,7 +113,7 @@ function sort_data(data::DataFrame)
     return t, μ, σ
 end
 
-function plot_ax!(f::GridPosition, b::BenchmarkSummary; ignore=[], ci::Number=2, legend=true, kwargs...)
+function plot_ax!(f::GridPosition, b::BenchmarkSummary; ret_data::Bool=false, ignore=[], ci::Number=2, legend=true, kwargs...)
     data = b.data
     names = b.solvers # ["POMCPOW", "PFTDPW", "SparsePFT", "POMCP", "AdaOPS"]
     df_data = [
@@ -123,18 +122,18 @@ function plot_ax!(f::GridPosition, b::BenchmarkSummary; ignore=[], ci::Number=2,
 
     axis = Axis(
         f;
-        title = b.title,
-        xlabel = "Planning Time (sec) - Log Scale",
-        ylabel = "Reward",
-        xscale = log10,
-        xticks = exp10.([-2,-1,0]),
-        xminorticksvisible = true,
-        xminorgridvisible = true,
-        xminorticks = IntervalsBetween(9),
-        limits = (0.01, 1.0, nothing, nothing),
+        title               = b.title,
+        xlabel              = "Planning Time (sec) - Log Scale",
+        ylabel              = "Reward",
+        xscale              = log10,
+        xticks              = exp10.([-2,-1,0]),
+        xminorticksvisible  = true,
+        xminorgridvisible   = true,
+        xminorticks         = IntervalsBetween(9),
+        limits              = (0.01, 1.0, nothing, nothing),
         kwargs...
     )
-    line_arr = []
+    line_dict = Dict{String, Any}()
     for (i,(name, data)) in enumerate(df_data)
         color = SOLVER_COLORS[name]
         t, μ, σ = sort_data(data)
@@ -148,15 +147,19 @@ function plot_ax!(f::GridPosition, b::BenchmarkSummary; ignore=[], ci::Number=2,
             t, μ .- ci*σ, μ .+ ci*σ,
             color=(color,0.10)
         )
-        push!(line_arr, [l,b])
+        line_dict[name] = [l,b]
     end
     if legend
         axislegend(
-            axis, line_arr, [first(t) for t in df_data],
+            axis, collect(values(line_dict)), collect(keys(line_dict)),
             position = :rb, labelsize=15, framevisible=true
         )
     end
-    return axis
+    if ret_data
+        return axis, line_dict
+    else
+        return axis
+    end
 end
 
 function plot_data(b::BenchmarkSummary; ignore=[], ci::Number=2)

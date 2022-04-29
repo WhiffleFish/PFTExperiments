@@ -11,28 +11,31 @@ b4 = BenchmarkSummary(COE.latest(VDPTAG_DATA_PATH, "compare"))
 b5 = BenchmarkSummary(COE.latest(DVDPTAG_DATA_PATH, "compare"))
 
 f = Figure()
-COE.plot_ax!(f[1,1], b1, ignore=["POMCP"]; legend=true, xlabel="")
+ax1,line_dict = COE.plot_ax!(f[1,1], b1, ignore=["POMCP"]; legend=false, xlabel="", ret_data=true)
 COE.plot_ax!(f[1,2], b2, ignore=["POMCP"]; legend=false, xlabel="", ylabel="")
-COE.plot_ax!(f[2,1], b3, ignore=["POMCP"]; legend=false)
-COE.plot_ax!(f[2,2], b4, ignore=["POMCP"]; legend=false, ylabel="")
+COE.plot_ax!(f[1,3], b3, ignore=["POMCP"]; legend=false, xlabel="Planning Time (sec)", ylabel="")
+COE.plot_ax!(f[2,1], b4, ignore=["POMCP"]; legend=false, xlabel="Planning Time (sec)")
+COE.plot_ax!(f[2,2], b5, ignore=["POMCP"]; legend=false, xlabel="Planning Time (sec)", ylabel="", title="Discrete VDPTag", limits = (0.01, 1.0, -10, nothing))
+Legend(f[2,3], collect(values(line_dict)), collect(keys(line_dict)))
+for i in 1:3; colsize!(f.layout, i, Aspect(1, 1.0)); end
 display(f)
 save(joinpath(COE.PROJECT_ROOT,"img","all_plots.pdf"), f)
 
 ##
 f = COE.plot_data(b1, ignore=["POMCP"], ci=2)
-save(joinpath(COE.PROJECT_ROOT,"img","LaserTag_2021_07_15.svg"), f)
+save(joinpath(COE.PROJECT_ROOT,"img","LaserTag_2021_07_15.pdf"), f)
 
 f = COE.plot_data(b2, ignore=["POMCP"], ci=2)
-save(joinpath(COE.PROJECT_ROOT,"img","LightDark_2021_07_15.svg"), f)
+save(joinpath(COE.PROJECT_ROOT,"img","LightDark_2021_07_15.pdf"), f)
 
 f = COE.plot_data(b3, ignore=["POMCP"], ci=2)
-save(joinpath(COE.PROJECT_ROOT,"img","Subhunt_2021_07_15.svg"), f)
+save(joinpath(COE.PROJECT_ROOT,"img","Subhunt_2021_07_15.pdf"), f)
 
 f = COE.plot_data(b4, ignore=["POMCP"], ci=2)
-save(joinpath(COE.PROJECT_ROOT,"img","VDPTag_2021_07_15.svg"), f)
+save(joinpath(COE.PROJECT_ROOT,"img","VDPTag_2021_07_15.pdf"), f)
 
 f = COE.plot_data(b5, ignore=["POMCP"], ci=2)
-save(joinpath(COE.PROJECT_ROOT,"img","DVDPTag_2022_04_27.svg"), f)
+save(joinpath(COE.PROJECT_ROOT,"img","DVDPTag_2022_04_27.pdf"), f)
 
 ##
 COE.table_data(b5)
@@ -63,10 +66,14 @@ using DataFrames
 using Statistics
 using CSV
 
-df = COE.latest(COE.SUBHUNT_DATA_PATH, "qmdp") |> CSV.File |> DataFrame
+df = COE.latest(COE.SUBHUNT_DATA_PATH, "SparsePFT") |> CSV.File |> DataFrame
 m = mean(df.r)
 std(df.reward) / sqrt(length(df.reward))
 # wtf is POMCP actually doing in VDPTag??? -> random default action
+
+b = BenchmarkSummary(COE.latest(COE.SUBHUNT_DATA_PATH, "SparsePFT"))
+
+sort(b.data, :t)
 
 m_min = -14.86
 m_max = 61.7
