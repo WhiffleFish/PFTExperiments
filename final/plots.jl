@@ -11,8 +11,8 @@ b4 = BenchmarkSummary(COE.latest(VDPTAG_DATA_PATH, "compare"))
 b5 = BenchmarkSummary(COE.latest(DVDPTAG_DATA_PATH, "compare"))
 
 f = Figure()
-ax1,line_dict = COE.plot_ax!(f[1,1], b1, ignore=["POMCP"]; legend=false, xlabel="", ret_data=true)
-COE.plot_ax!(f[1,2], b2, ignore=["POMCP"]; legend=false, xlabel="", ylabel="")
+ax1,line_dict = COE.plot_ax!(f[1,1], b1, ignore=["POMCP"]; legend=false, xlabel="Planning Time (sec)", ret_data=true)
+COE.plot_ax!(f[1,2], b2, ignore=["POMCP"]; legend=false, xlabel="Planning Time (sec)", ylabel="")
 COE.plot_ax!(f[1,3], b3, ignore=["POMCP"]; legend=false, xlabel="Planning Time (sec)", ylabel="")
 COE.plot_ax!(f[2,1], b4, ignore=["POMCP"]; legend=false, xlabel="Planning Time (sec)")
 COE.plot_ax!(f[2,2], b5, ignore=["POMCP"]; legend=false, xlabel="Planning Time (sec)", ylabel="", title="Discrete VDPTag", limits = (0.01, 1.0, -10, nothing))
@@ -78,3 +78,8 @@ sort(b.data, :t)
 m_min = -14.86
 m_max = 61.7
 (m - m_min) / (m_max - m_min)
+
+
+df = COE.latest(COE.DVDPTAG_DATA_PATH, "random") |> CSV.File |> DataFrame
+df.reward |> mean
+std(df.reward) / √length(df.reward)
