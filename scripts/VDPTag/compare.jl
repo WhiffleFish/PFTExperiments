@@ -70,8 +70,8 @@ POMCP_params = Dict{Symbol, Any}(
 solvers = [
     (PFTDPWSolver,"PFTDPW", PFTDPW_params),
     (PFTDPWSolver,"SparsePFT", SparsePFT_params),
-    (POMCPOWSolver, "POMCPOW", POMCPOW_params),
-    (POMCPSolver, "POMCP", POMCP_params)
+    (POMCPOWSolver, "POMCPOW", POMCPOW_params)
+    # (POMCPSolver, "POMCP", POMCP_params)
 ]
 
 updater = BootstrapFilter(pomdp, 100_000)
