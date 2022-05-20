@@ -1,8 +1,12 @@
 using Distributed
 using CSV
 using Dates
+using ContObsExperiments
+const COE = ContObsExperiments
 
-worker_ids = Distributed.addprocs(20; exeflags="--project")
+args = COE.parse_commandline()
+
+p = addprocs(args["addprocs"]; exeflags="--project")
 
 Distributed.@everywhere begin
     using POMDPs
@@ -12,10 +16,10 @@ Distributed.@everywhere begin
     using VDPTag2
 end
 
-using ContObsExperiments
+@show length(procs())
 
+pomdp = VDPTagPOMDP(mdp=VDPTagMDP(barriers=CardinalBarriers(0.2, 2.8)))
 
-pomdp = VDPTagPOMDP()
 times = 10.0 .^ (-2:0.25:0)
 PFTDPW_params = Dict{Symbol,Any}(
     :c => 70.0,
@@ -72,13 +76,13 @@ solvers = [
 
 updater = BootstrapFilter(pomdp, 100_000)
 max_steps = 100
-N = 5000
+N = args["iter"]
 
 bb = BatchBenchmark(pomdp, times, solvers, updater, max_steps, N)
 
 df = benchmark(bb)
 
-rmprocs(worker_ids)
+rmprocs(p)
 
 date_str = Dates.format(now(), "_yyyy_mm_dd")
 filename = "compare"*date_str*".csv"

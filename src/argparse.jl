@@ -11,7 +11,7 @@ function parse_commandline()
             default = 19
         "--iter"
             arg_type = Int
-            default = 100
+            default = 1000
     end
 
     parsed_args = parse_args(s)

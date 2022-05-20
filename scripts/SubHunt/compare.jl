@@ -1,8 +1,14 @@
+using ContObsExperiments
+const COE = ContObsExperiments
 using Distributed
 using CSV
 using Dates
 
-worker_ids = Distributed.addprocs(20; exeflags="--project")
+args = COE.parse_commandline()
+
+p = addprocs(args["addprocs"]; exeflags="--project")
+
+@show length(procs())
 
 Distributed.@everywhere begin
     using POMDPs
@@ -86,13 +92,13 @@ solvers = [
 
 updater = BootstrapFilter(pomdp, 100_000)
 max_steps = 100
-N = 1000
+N = args["iter"]
 
 bb = BatchBenchmark(pomdp, times, solvers, updater, max_steps, N)
 
 df = benchmark(bb)
 
-rmprocs(worker_ids)
+rmprocs(p)
 
 date_str = Dates.format(now(), "_yyyy_mm_dd")
 filename = "compare"*date_str*".csv"

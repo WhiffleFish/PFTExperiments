@@ -1,8 +1,12 @@
 using Distributed
 using CSV
 using Dates
+using ContObsExperiments
+const COE = ContObsExperiments
 
-worker_ids = Distributed.addprocs(20; exeflags="--project")
+p = addprocs(args["addprocs"]; exeflags="--project")
+
+@show length(procs())
 
 Distributed.@everywhere begin
     using POMDPs
@@ -15,8 +19,6 @@ Distributed.@everywhere begin
     using LaserTag
     using QMDP
 end
-
-using ContObsExperiments
 
 pomdp = gen_lasertag()
 VE = FOValue(ValueIterationSolver())
@@ -88,13 +90,13 @@ solvers = [
 
 updater = BootstrapFilter(pomdp, 500_000)
 max_steps = 50
-N = 5000
+N = args["test"] ? args["iter"] : 5000
 
 bb = BatchBenchmark(pomdp, times, solvers, updater, max_steps, N)
 
 df = benchmark(bb)
 
-rmprocs(worker_ids)
+rmprocs(p)
 
 date_str = Dates.format(now(), "_yyyy_mm_dd")
 filename = "compare"*date_str*".csv"

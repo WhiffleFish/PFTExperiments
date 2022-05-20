@@ -1,7 +1,7 @@
 struct BatchBenchmark{UPD<:Updater}
     pomdp::POMDP
     times::Vector{Float64} # planning times
-    solvers::Vector{ Tuple{UnionAll, String, Dict{Symbol,Any}} } # (solver_type, solver_name, solver_params)
+    solvers::Vector{<:Tuple} # (solver_type, solver_name, solver_params)
     updater::UPD # sim belief updater
     max_steps::Int # max sim steps
     N::Int # number of times to repeat a simulation
