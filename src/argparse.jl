@@ -17,7 +17,7 @@ function parse_commandline()
     parsed_args = parse_args(s)
     if parsed_args["test"]
         parsed_args["addprocs"] = 2
-        parsed_args["iter"] = 3
+        parsed_args["iter"] = 2
     end
     return parsed_args
 end

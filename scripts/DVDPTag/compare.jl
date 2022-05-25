@@ -16,7 +16,7 @@ Distributed.@everywhere begin
     using PFTDPW, POMCPOW, BasicPOMCP, AdaOPS
     using VDPTag2
 
-    const pomdp = ADiscreteVDPTagPOMDP(n_angles=20)
+    const pomdp = ADiscreteVDPTagPOMDP(cpomdp=VDPTagPOMDP(mdp=VDPTagMDP(barriers=CardinalBarriers(0.2, 2.8))), n_angles=20)
     # AdaOPS calls observation(pomdp, a, sp) on setup just to get type of obs dist
     is = initialstate(pomdp)
     s = rand(is)
@@ -25,7 +25,8 @@ Distributed.@everywhere begin
     POMDPs.observation(p::ADiscreteVDPTagPOMDP, a::Int, sp::TagState) = POMDPs.observation(p, s, a, sp)
 end
 
-times = 10.0 .^ (-2:0.25:0)
+times = args["test"] ? [0.5] : 10.0 .^ (-2:0.25:0)
+
 PFTDPW_params = Dict{Symbol,Any}(
     :c => 47.0,
     :k_o => 4.0,
@@ -76,7 +77,7 @@ solvers = [
     (AdaOPSSolver, "AdaOPS", AdaOPS_params)
 ]
 
-updater = BootstrapFilter(pomdp, 100_000)
+updater = BootstrapFilter(pomdp, 200_000)
 max_steps = 100
 N = args["iter"]
 
