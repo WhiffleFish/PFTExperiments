@@ -1,7 +1,6 @@
 module ContObsExperiments
 using POMDPs
 using POMDPSimulators
-using DataFrames
 using ColorSchemes
 using Random
 using CSV
@@ -12,6 +11,8 @@ using Statistics
 using FileIO
 using Hyperopt
 using ArgParse
+
+__precompile__(false)
 
 const PROJECT_ROOT = pkgdir(ContObsExperiments)
 

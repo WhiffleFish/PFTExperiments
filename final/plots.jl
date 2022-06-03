@@ -2,7 +2,13 @@ using ContObsExperiments
 const COE = ContObsExperiments
 using CairoMakie
 
-set_theme!(Theme(fontsize=19, font="Times New Roman"))
+FONT = "Times New Roman"
+FONTSIZE = 14
+XLABEL = "Planning Time (sec)"
+YLABEL = "Reward"
+IGNORE = ["POMCP"]
+
+set_theme!(Theme(fontsize=FONTSIZE, font=FONT))
 
 b1 = BenchmarkSummary(COE.latest(LASERTAG_DATA_PATH, "compare"))
 b2 = BenchmarkSummary(COE.latest(LIGHTDARK_DATA_PATH, "compare"))
@@ -10,16 +16,37 @@ b3 = BenchmarkSummary(COE.latest(SUBHUNT_DATA_PATH, "compare"))
 b4 = BenchmarkSummary(COE.latest(VDPTAG_DATA_PATH, "compare"))
 b5 = BenchmarkSummary(COE.latest(DVDPTAG_DATA_PATH, "compare"))
 
-f = Figure()
-ax1,line_dict = COE.plot_ax!(f[1,1], b1, ignore=["POMCP"]; legend=false, xlabel="", ret_data=true)
-COE.plot_ax!(f[1,2], b2, ignore=["POMCP"]; legend=false, xlabel="", ylabel="")
-COE.plot_ax!(f[1,3], b3, ignore=["POMCP"]; legend=false, xlabel="Planning Time (sec)", ylabel="")
-COE.plot_ax!(f[2,1], b4, ignore=["POMCP"]; legend=false, xlabel="Planning Time (sec)")
-COE.plot_ax!(f[2,2], b5, ignore=["POMCP"]; legend=false, xlabel="Planning Time (sec)", ylabel="", title="Discrete VDPTag", limits = (0.01, 1.0, -10, nothing))
-Legend(f[2,3], collect(values(line_dict)), collect(keys(line_dict)))
-for i in 1:3; colsize!(f.layout, i, Aspect(1, 1.0)); end
-display(f)
+
+size_inches = (8.3, 6.5)
+size_pt = 72 .* size_inches
+begin # This is positively horrific
+    f = Figure(resolution = size_pt, fontsize = FONTSIZE)
+    ax1, line_dict = COE.plot_ax!(f[1,1], b1; ignore=IGNORE, legend=false, xlabel="", ylabel=YLABEL, ret_data=true, titlefont=FONT, xticklabelsvisible=false)
+    COE.plot_ax!(f[1,2], b2; ignore=IGNORE, legend=false, xlabel="", ylabel="", titlefont=FONT, xticklabelsvisible=false)
+    COE.plot_ax!(f[1,3], b3; ignore=IGNORE, legend=false, xlabel="", ylabel="", titlefont=FONT)
+    COE.plot_ax!(f[2,1], b4; ignore=IGNORE, legend=false, xlabel="", ylabel=YLABEL, titlefont=FONT)
+    COE.plot_ax!(f[2,2], b5; ignore=IGNORE, legend=false, xlabel="", ylabel="", title="Discrete VDP Tag", limits = (0.01, 1.0, -10, nothing), titlefont=FONT)
+    Legend(f[2,3], collect(values(line_dict)), collect(keys(line_dict)))
+    for i in 1:3
+        ax = Axis(f[3,i])
+        hidedecorations!(ax)
+        hidespines!(ax)
+        text!(XLABEL, ax, textsize=FONTSIZE, font=FONT, align=(:center,:bottom))
+    end
+    for i in 1:3; colsize!(f.layout, i, Aspect(1, 1.0)); end
+    rowsize!(f.layout, 3, Fixed(30))
+    display(f)
+end
+
 save(joinpath(COE.PROJECT_ROOT,"img","all_plots.pdf"), f)
+
+##
+
+size_inches = (4, 3)
+size_pt = 72 .* size_inches
+f = Figure(resolution = size_pt, fontsize = 12)
+save("figure.pdf", f, pt_per_unit = 1)
+
 
 ##
 f = COE.plot_data(b1, ignore=["POMCP"], ci=2)
@@ -37,7 +64,12 @@ save(joinpath(COE.PROJECT_ROOT,"img","VDPTag_2021_07_15.pdf"), f)
 f = COE.plot_data(b5, ignore=["POMCP"], ci=2)
 save(joinpath(COE.PROJECT_ROOT,"img","DVDPTag_2022_04_27.pdf"), f)
 
-##
+## extra
+
+COE.plot_data(b4)
+COE.plot_data(b5)
+
+COE.table_data(b4)
 COE.table_data(b5)
 
 
@@ -69,7 +101,6 @@ using CSV
 df = COE.latest(COE.SUBHUNT_DATA_PATH, "SparsePFT") |> CSV.File |> DataFrame
 m = mean(df.r)
 std(df.reward) / sqrt(length(df.reward))
-# wtf is POMCP actually doing in VDPTag??? -> random default action
 
 b = BenchmarkSummary(COE.latest(COE.SUBHUNT_DATA_PATH, "SparsePFT"))
 

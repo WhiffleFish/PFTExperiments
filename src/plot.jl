@@ -39,10 +39,10 @@ const SOLVER_COLORS = Dict{String, ColorSchemes.RGB{Float64}}(
 
 const POMDP_NAMES = Dict{String, String}(
     "baby"      => "Baby",
-    "lightdark" => "LightDark",
-    "lasertag"  => "LaserTag",
-    "subhunt"   => "SubHunt",
-    "vdptag"    => "VDPTag"
+    "lightdark" => "Light Dark",
+    "lasertag"  => "Laser Tag",
+    "subhunt"   => "Sub Hunt",
+    "vdptag"    => "VDP Tag"
 )
 
 struct BenchmarkSummary
