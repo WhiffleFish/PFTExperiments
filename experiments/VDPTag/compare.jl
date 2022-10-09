@@ -10,15 +10,14 @@ p = addprocs(args["addprocs"]; exeflags="--project")
 
 Distributed.@everywhere begin
     using POMDPs
-    using POMDPSimulators
+    using POMDPTools
     using ParticleFilters
     using ParticleFilterTrees, POMCPOW, BasicPOMCP
     using VDPTag2
+    const pomdp = VDPTagPOMDP(mdp=VDPTagMDP(barriers=CardinalBarriers(0.2, 2.8)))
 end
 
 @show length(procs())
-
-pomdp = VDPTagPOMDP(mdp=VDPTagMDP(barriers=CardinalBarriers(0.2, 2.8)))
 
 times = 10.0 .^ (-2:0.25:0)
 PFTDPW_params = Dict{Symbol,Any}(

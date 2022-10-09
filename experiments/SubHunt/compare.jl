@@ -20,10 +20,12 @@ Distributed.@everywhere begin
     using DiscreteValueIteration
     using SubHunt
     using QMDP
+    pomdp = SubHuntPOMDP()
+    Distributions.support(::SubHunt.SubHuntInitDist) = ordered_states(pomdp)
 end
 
 const PFT = ParticleFilterTrees
-pomdp = SubHuntPOMDP()
+
 VE = FOValue(ValueIterationSolver())
 PO_VE = PFT.PORollout(QMDPSolver(); n_rollouts=1)
 

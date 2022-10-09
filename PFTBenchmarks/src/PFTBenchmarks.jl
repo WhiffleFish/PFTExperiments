@@ -6,6 +6,7 @@ using Random
 using Dates
 using DataFrames
 using ArgParse
+using Statistics
 
 const PROJECT_ROOT = abspath(joinpath(@__DIR__, "..", ".."))
 

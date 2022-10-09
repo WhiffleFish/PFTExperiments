@@ -55,6 +55,6 @@ try
 catch ArgumentError
     @info "VDPTag2 not found - installing"
     try Pkg.rm("VDPTag2") catch end
-    Pkg.add(url="https://github.com/WhiffleFish/SubHunt.jl#master")
+    Pkg.add(url="https://github.com/WhiffleFish/VDPTag2.jl.git#master")
 end
 println()

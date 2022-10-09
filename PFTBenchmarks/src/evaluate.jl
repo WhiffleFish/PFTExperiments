@@ -1,8 +1,8 @@
-mutable struct OptParams{T<:Solver}
+mutable struct OptParams{T<:Solver, P<:POMDP, UPD<:Updater}
     sol_t::Type{T}
-    pomdp::POMDP
+    pomdp::P
     n::Int
-    updater::Updater
+    updater::UPD
     max_steps::Int
 end
 
