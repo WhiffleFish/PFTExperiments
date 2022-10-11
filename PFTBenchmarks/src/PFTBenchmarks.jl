@@ -10,6 +10,8 @@ using Statistics
 
 const PROJECT_ROOT = abspath(joinpath(@__DIR__, "..", ".."))
 
+include("forgivingrollout.jl")
+
 include("benchmark.jl")
 export BatchBenchmark, benchmark
 

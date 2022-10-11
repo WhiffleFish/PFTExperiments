@@ -14,6 +14,7 @@ p = addprocs(args["addprocs"]; exeflags="--project")
 @everywhere begin
     using Pkg
     Pkg.activate(".")
+    using PFTBenchmarks
     using VDPTag2
     using ParticleFilterTrees
     const PFT = ParticleFilterTrees

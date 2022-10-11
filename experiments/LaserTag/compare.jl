@@ -90,7 +90,7 @@ solvers = [
     (AdaOPSSolver, "AdaOPS", AdaOPS_params)
 ]
 
-updater = BootstrapFilter(pomdp, 500_000)
+updater = DiscreteUpdater(pomdp)
 max_steps = 50
 N = args["test"] ? args["iter"] : 5000
 

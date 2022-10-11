@@ -16,7 +16,7 @@ function evaluate(params::OptParams; verbose::Bool=false, kwargs...)
         planner,
         bu,
         max_steps = params.max_steps,
-        simulator = RolloutSimulator(max_steps=params.max_steps))
+        simulator = ForgivingRolloutSimulator(5;max_steps=params.max_steps, rng=MersenneTwister(rand(UInt32))))
         for _ in 1:N]
     res = run_parallel(sims, show_progress=true)
     μ = mean(res.reward)

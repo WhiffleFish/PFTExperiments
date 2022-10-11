@@ -24,10 +24,10 @@ function unshuffled_benchmark(bb::BatchBenchmark)
             println("Solver: $name")
             println("Planning Time: $t")
 
-            try
-                solver = sol_t(; max_time=t, p...)
+            solver = try
+                sol_t(; max_time=t, p...)
             catch
-                solver = sol_t(; T_max=t, p...)
+                sol_t(; T_max=t, p...)
             end
             planner = solve(solver, bb.pomdp)
             sims = [POMDPTools.Sim(
@@ -35,7 +35,7 @@ function unshuffled_benchmark(bb::BatchBenchmark)
                 planner,
                 bb.updater,
                 max_steps=bb.max_steps,
-                simulator=RolloutSimulator(max_steps=bb.max_steps, rng = MersenneTwister(rand(UInt32)))
+                simulator=ForgivingRolloutSimulator(5;max_steps=bb.max_steps, rng = MersenneTwister(rand(UInt32)))
             ) for _ in 1:bb.N]
             res = run_parallel(sims, show_progress=true)
 
@@ -58,7 +58,8 @@ function shuffled_benchmark(bb::BatchBenchmark)
     for t in bb.times
         for (sol_t,name,p) in bb.solvers
 
-            solver = try sol_t(; max_time=t, p...)
+            solver = try
+                sol_t(; max_time=t, p...)
             catch
                 sol_t(; T_max=t, p...)
             end
@@ -68,7 +69,7 @@ function shuffled_benchmark(bb::BatchBenchmark)
                 planner,
                 bb.updater,
                 max_steps=bb.max_steps,
-                simulator=RolloutSimulator(max_steps=bb.max_steps, rng = MersenneTwister(rand(UInt32)))
+                simulator=ForgivingRolloutSimulator(5;max_steps=bb.max_steps, rng = MersenneTwister(rand(UInt32)))
             ) for _ in 1:bb.N]
 
             sims[i:(i+bb.N-1)] .= cur_sims
