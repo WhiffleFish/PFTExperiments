@@ -8,7 +8,7 @@ args = COE.parse_commandline()
 
 p = addprocs(args["addprocs"]; exeflags="--project")
 
-@info "SparsePFT LightDark Hyperopt"
+@info "PFTDPW LightDark Hyperopt"
 @show length(procs())
 
 @everywhere begin

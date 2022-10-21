@@ -14,6 +14,7 @@ p = addprocs(args["addprocs"]; exeflags="--project")
 @everywhere begin
     using Pkg
     Pkg.activate(".")
+    using PFTBenchmarks
     using LaserTag
     using ParticleFilterTrees
     const PFT = ParticleFilterTrees
@@ -41,11 +42,11 @@ ho = @hyperopt for i=ITER,
             sampler         = CLHSampler(
                                 dims=[Continuous(), Continuous(), Continuous(),
                                       Continuous(), Continuous()]),
-            _max_depth      = range(5,  50,  length=ITER),
-            _k_o            = range(2,  30,  length=ITER),
-            _c              = range(1,  100, length=ITER),
-            _inv_β          = range(1,  16,  length=ITER),
-            _n_particles    = range(10, 500, length=ITER)
+            _max_depth      = range(5,  50,     length=ITER),
+            _k_o            = range(2,  30,     length=ITER),
+            _c              = range(1,  100,    length=ITER),
+            _inv_β          = range(1,  16,     length=ITER),
+            _n_particles    = range(10, 500,    length=ITER)
 
     println("$i / $ITER")
     COE.evaluate(

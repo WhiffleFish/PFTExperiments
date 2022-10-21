@@ -47,7 +47,7 @@ ho = @hyperopt for i=ITER,
    COE.evaluate(
         params;
         verbose = true,
-        action_selector = qmdp
+        action_selector = qmdp,
         tree_queries = 100_000,
         max_time     = 0.1,
         max_depth    = round(Int,_max_depth),

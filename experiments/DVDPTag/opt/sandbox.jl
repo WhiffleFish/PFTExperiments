@@ -1,7 +1,18 @@
 using Hyperopt
-using ContObsExperiments
-const COE = ContObsExperiments
-using Hyperopt
+using PFTBenchmarks
+const COE = PFTBenchmarks
+using JLD2
+using Plots
+ho = first(values(load("experiments/VDPTag/opt/data/PFTDPW.jld2")))
+h = Hyperoptimizer((getfield(ho, f) for f ∈ propertynames(ho))..., ()->())
+plot(h)
+
+h.maximizer
+h.params
+
+for (p,v) ∈ zip(h.params, h.maximizer)
+    println(p,":\t",round(v;sigdigits=3))
+end
 
 
 ##

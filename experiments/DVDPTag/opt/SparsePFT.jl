@@ -1,5 +1,5 @@
-using ContObsExperiments
-const COE = ContObsExperiments
+using PFTBenchmarks
+const COE = PFTBenchmarks
 using Distributed
 using Hyperopt
 using FileIO, JLD2
@@ -14,31 +14,34 @@ p = addprocs(args["addprocs"]; exeflags="--project")
 @everywhere begin
     using Pkg
     Pkg.activate(".")
+    using PFTBenchmarks
     using VDPTag2
-    using PFTDPW
+    using ParticleFilterTrees
+    const PFT = ParticleFilterTrees
     using ParticleFilters
     using POMDPs
+    const pomdp = ADiscreteVDPTagPOMDP(cpomdp=VDPTagPOMDP(mdp=VDPTagMDP(barriers=CardinalBarriers(0.2, 2.8))), n_angles=20)
 end
-
 
 const ITER = args["iter"]
 
 params = COE.OptParams(
     PFTDPWSolver,
-    ADiscreteVDPTagPOMDP(n_angles=20),
-    250,
-    BootstrapFilter(ADiscreteVDPTagPOMDP(n_angles=20), 10_000),
+    pomdp,
+    args["test"] ? 5 : 250,
+    BootstrapFilter(pomdp, 100_000),
     20
 )
 
 ho = @hyperopt for i=ITER,
             sampler         = CLHSampler(
                                 dims=[Continuous(), Continuous(), Continuous(),
-                                      Continuous()]),
-            _max_depth      = range(5,  50,  length=ITER),
-            _k_o            = range(2,  30,  length=ITER),
-            _c              = range(1,  100, length=ITER),
-            _n_particles    = range(10, 500, length=ITER)
+                                      Continuous(), Continuous()]),
+            _max_depth      = range(5,   50,    length=ITER),
+            _k_o            = range(2,   30,    length=ITER),
+            _c              = range(1,   100,   length=ITER),
+            _inv_β          = range(1,  16,     length=ITER),
+            _n_particles    = range(10,  500,   length=ITER)
 
     println("$i / $ITER")
     COE.evaluate(
@@ -50,7 +53,8 @@ ho = @hyperopt for i=ITER,
         max_time     = 0.1,
         max_depth    = round(Int,_max_depth),
         k_o          = _k_o,
-        c            = _c,
+        alpha_o      = 0.0,
+        criterion    = PFT.MaxPoly(_c,inv(_inv_β)),
         n_particles  = round(Int, _n_particles)
     )
 end

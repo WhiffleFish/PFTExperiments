@@ -29,7 +29,7 @@ params = COE.OptParams(
     PFTDPWSolver,
     pomdp,
     args["test"] ? 5 : 250,
-    BootstrapFilter(pomdp, 10_000),
+    BootstrapFilter(pomdp, 100_000),
     20
 )
 
