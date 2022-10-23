@@ -11,17 +11,16 @@ p = addprocs(args["addprocs"]; exeflags="--project")
 @show length(procs())
 
 Distributed.@everywhere begin
-    using POMDPs
-    using POMDPSimulators
+    using POMDPs, POMDPTools
+    using PFTBenchmarks
     using ParticleFilters
-    using POMDPPolicies
     using ParticleFilterTrees, POMCPOW, BasicPOMCP
     using AdaOPS
     using DiscreteValueIteration
     using SubHunt
     using QMDP
-    pomdp = SubHuntPOMDP()
-    Distributions.support(::SubHunt.SubHuntInitDist) = ordered_states(pomdp)
+    const pomdp = SubHuntPOMDP()
+    # Distributions.support(::SubHunt.SubHuntInitDist) = ordered_states(pomdp)
 end
 
 const PFT = ParticleFilterTrees
@@ -29,13 +28,13 @@ const PFT = ParticleFilterTrees
 VE = FOValue(ValueIterationSolver())
 PO_VE = PFT.PORollout(QMDPSolver(); n_rollouts=1)
 
-times = 10.0 .^ (-2:0.25:0)
+times = args["test"] ? [0.1] : 10.0 .^ (-2:0.25:0)
 PFTDPW_params = Dict{Symbol,Any}(
-    :criterion => PFT.MaxUCB(100.0),
-    :k_o => 2.0,
-    :alpha_o => 1/10,
-    :n_particles => 20,
-    :max_depth => 50,
+    :criterion => PFT.MaxPoly(85.43, inv(11.83)),
+    :k_o => 9.62,
+    :alpha_o => 0.08,
+    :n_particles => 79,
+    :max_depth => 20,
     :tree_queries => 1_000_000,
     :value_estimator => PO_VE,
     :check_repeat_obs => false,
@@ -43,11 +42,11 @@ PFTDPW_params = Dict{Symbol,Any}(
 )
 
 SparsePFT_params = Dict{Symbol,Any}(
-    :criterion => PFT.MaxUCB(100.0),
-    :k_o => 5.0,
+    :criterion => PFT.MaxPoly(20.24, inv(3.95)),
+    :k_o => 27.36,
     :alpha_o => 0.0,
-    :n_particles => 20,
-    :max_depth => 50,
+    :n_particles => 23,
+    :max_depth => 19,
     :tree_queries => 1_000_000,
     :value_estimator => PO_VE,
     :check_repeat_obs => false,
@@ -83,7 +82,7 @@ AdaOPS_params = Dict{Symbol, Any}(
 )
 
 solvers = [
-    # (PFTDPWSolver,"PFTDPW", PFTDPW_params),
+    (PFTDPWSolver,"PFTDPW", PFTDPW_params),
     (PFTDPWSolver,"SparsePFT", SparsePFT_params)
     # (POMCPOWSolver, "POMCPOW", POMCPOW_params),
     # (POMCPSolver, "POMCP", POMCP_params)
@@ -92,7 +91,7 @@ solvers = [
 
 updater = BootstrapFilter(pomdp, 100_000)
 max_steps = 100
-N = args["iter"]
+N = args["test"] ? 5 : args["iter"]
 
 bb = BatchBenchmark(pomdp, times, solvers, updater, max_steps, N)
 

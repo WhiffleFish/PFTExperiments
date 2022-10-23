@@ -11,28 +11,33 @@ p = addprocs(args["addprocs"]; exeflags="--project")
 @show length(procs())
 
 Distributed.@everywhere begin
+    using PFTBenchmarks
     using POMDPs
-    using POMDPSimulators
+    using POMDPTools
     using ParticleFilters
-    using POMDPPolicies
     using ParticleFilterTrees, POMCPOW, BasicPOMCP
+    const PFT = ParticleFilterTrees
     using AdaOPS
     using DiscreteValueIteration
     using LaserTag
     using QMDP
+
+    import Distributions
+    const pomdp = gen_lasertag()
+    Distributions.support(::LaserTag.LTInitialBelief) = states(pomdp)
 end
 
-pomdp = gen_lasertag()
-VE = FOValue(ValueIterationSolver())
-PO_VE = PFTDPW.PORollout(QMDPSolver(); n_rollouts=1)
 
-times = 10.0 .^ (-2:0.25:0)
+VE = FOValue(ValueIterationSolver())
+PO_VE = PFT.PORollout(QMDPSolver(); n_rollouts=1)
+
+times = args["test"] ? [0.1] : 10.0 .^ (-2:0.25:0)
 PFTDPW_params = Dict{Symbol,Any}(
-    :criterion => PFT.MaxUCB(26.0),
-    :k_o => 4.0,
-    :alpha_o => 1/35,
-    :n_particles => 20,
-    :max_depth => 50,
+    :criterion => PFT.MaxPoly(25.18, inv(10.85)),
+    :k_o => 5.22,
+    :alpha_o => 0.33,
+    :n_particles => 25,
+    :max_depth => 48,
     :tree_queries => 1_000_000,
     :value_estimator => PO_VE,
     :check_repeat_obs => false,
@@ -40,13 +45,11 @@ PFTDPW_params = Dict{Symbol,Any}(
 )
 
 SparsePFT_params = Dict{Symbol,Any}(
-    :criterion => PFT.MaxUCB(26.0),
-    :k_o => 4.0,
-    :k_a => 9.0,
+    :criterion => PFT.MaxPoly(15.48,inv(4.58)),
+    :k_o => 15.5,
     :alpha_o => 0.0,
-    :alpha_a => 0.0,
-    :n_particles => 20,
-    :max_depth => 50,
+    :n_particles => 96,
+    :max_depth => 37,
     :tree_queries => 1_000_000,
     :value_estimator => PO_VE,
     :check_repeat_obs => false,
@@ -83,16 +86,16 @@ AdaOPS_params = Dict{Symbol, Any}(
 )
 
 solvers = [
-    # (PFTDPWSolver,"PFTDPW", PFTDPW_params),
-    # (PFTDPWSolver,"SparsePFT", SparsePFT_params)
+    (PFTDPWSolver,"PFTDPW", PFTDPW_params),
+    (PFTDPWSolver,"SparsePFT", SparsePFT_params)
     # (POMCPOWSolver, "POMCPOW", POMCPOW_params),
     # (POMCPSolver, "POMCP", POMCP_params),
-    (AdaOPSSolver, "AdaOPS", AdaOPS_params)
+    # (AdaOPSSolver, "AdaOPS", AdaOPS_params)
 ]
 
 updater = DiscreteUpdater(pomdp)
 max_steps = 50
-N = args["test"] ? args["iter"] : 5000
+N = args["test"] ? 5 : args["iter"]
 
 bb = BatchBenchmark(pomdp, times, solvers, updater, max_steps, N)
 

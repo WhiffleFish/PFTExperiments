@@ -9,38 +9,41 @@ args = COE.parse_commandline()
 p = addprocs(args["addprocs"]; exeflags="--project")
 
 Distributed.@everywhere begin
+    using PFTBenchmarks
     using POMDPs
     using POMDPTools
     using ParticleFilters
     using ParticleFilterTrees, POMCPOW, BasicPOMCP
+    using PFTBenchmarks
+    const PFT = ParticleFilterTrees
     using VDPTag2
     const pomdp = VDPTagPOMDP(mdp=VDPTagMDP(barriers=CardinalBarriers(0.2, 2.8)))
 end
 
 @show length(procs())
 
-times = 10.0 .^ (-2:0.25:0)
+times = args["test"] ? [0.1] : 10.0 .^ (-2:0.25:0)
 PFTDPW_params = Dict{Symbol,Any}(
-    :criterion => PFT.MaxUCB(70.0),
-    :k_o => 8.0,
-    :k_a => 20.0,
-    :alpha_o => 1/85,
-    :alpha_a => 1/25,
-    :n_particles => 20,
-    :max_depth => 10,
+    :criterion => PFT.MaxPoly(23.4, inv(4.07)),
+    :k_o => 21.4,
+    :k_a => 22.52,
+    :alpha_o => 0.043,
+    :alpha_a => 0.317,
+    :n_particles => 132,
+    :max_depth => 44,
     :tree_queries => 1_000_000,
     :check_repeat_obs => false,
     :enable_action_pw => true
 )
 
 SparsePFT_params = Dict{Symbol,Any}(
-    :criterion => PFT.MaxUCB(70.0),
-    :k_o => 8.0,
-    :k_a => 20.0,
+    :criterion => PFT.MaxPoly(15.68, inv(8.15)),
+    :k_o => 28.0,
+    :k_a => 27.92,
     :alpha_o => 1/10,
     :alpha_a => 0.0,
-    :n_particles => 20,
-    :max_depth => 10,
+    :n_particles => 385,
+    :max_depth => 33,
     :tree_queries => 1_000_000,
     :check_repeat_obs => false,
     :enable_action_pw => true
@@ -69,13 +72,13 @@ POMCP_params = Dict{Symbol, Any}(
 solvers = [
     (PFTDPWSolver,"PFTDPW", PFTDPW_params),
     (PFTDPWSolver,"SparsePFT", SparsePFT_params),
-    (POMCPOWSolver, "POMCPOW", POMCPOW_params)
+    # (POMCPOWSolver, "POMCPOW", POMCPOW_params)
     # (POMCPSolver, "POMCP", POMCP_params)
 ]
 
 updater = BootstrapFilter(pomdp, 100_000)
 max_steps = 100
-N = args["iter"]
+N = args["test"] ? 5 : args["iter"]
 
 bb = BatchBenchmark(pomdp, times, solvers, updater, max_steps, N)
 

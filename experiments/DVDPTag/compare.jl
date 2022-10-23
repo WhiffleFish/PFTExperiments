@@ -11,9 +11,11 @@ p = addprocs(args["addprocs"]; exeflags="--project")
 @show length(procs())
 
 Distributed.@everywhere begin
-    using POMDPs, POMDPSimulators, POMDPPolicies
+    using POMDPs, POMDPTools
+    using PFTBenchmarks
     using ParticleFilters
     using ParticleFilterTrees, POMCPOW, BasicPOMCP, AdaOPS
+    const PFT = ParticleFilterTrees
     using VDPTag2
 
     const pomdp = ADiscreteVDPTagPOMDP(cpomdp=VDPTagPOMDP(mdp=VDPTagMDP(barriers=CardinalBarriers(0.2, 2.8))), n_angles=20)
@@ -25,25 +27,25 @@ Distributed.@everywhere begin
     POMDPs.observation(p::ADiscreteVDPTagPOMDP, a::Int, sp::TagState) = POMDPs.observation(p, s, a, sp)
 end
 
-times = args["test"] ? [0.5] : 10.0 .^ (-2:0.25:0)
+times = args["test"] ? [0.1] : 10.0 .^ (-2:0.25:0)
 
 PFTDPW_params = Dict{Symbol,Any}(
-    :criterion => PFT.MaxUCB(47.0),
-    :k_o => 4.0,
-    :alpha_o => 0.19,
-    :n_particles => 119,
-    :max_depth => 10,
+    :criterion => PFT.MaxPoly(10.32, inv(5.48)),
+    :k_o => 9.23,
+    :alpha_o => 0.11,
+    :n_particles => 330,
+    :max_depth => 22,
     :tree_queries => 1_000_000,
     :check_repeat_obs => false,
     :enable_action_pw => false
 )
 
 SparsePFT_params = Dict{Symbol,Any}(
-    :criterion => PFT.MaxUCB(61.0),
-    :k_o => 10.0,
+    :criterion => PFT.MaxPoly(76.2, inv(12.81)),
+    :k_o => 25.0,
     :alpha_o => 0.0,
-    :n_particles => 240,
-    :max_depth => 10,
+    :n_particles => 444,
+    :max_depth => 46,
     :tree_queries => 1_000_000,
     :check_repeat_obs => false,
     :enable_action_pw => false
@@ -79,7 +81,7 @@ solvers = [
 
 updater = BootstrapFilter(pomdp, 200_000)
 max_steps = 100
-N = args["iter"]
+N = args["test"] ? 5 : args["iter"]
 
 bb = BatchBenchmark(pomdp, times, solvers, updater, max_steps, N)
 

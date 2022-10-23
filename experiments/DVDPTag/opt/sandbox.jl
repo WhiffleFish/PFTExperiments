@@ -3,15 +3,41 @@ using PFTBenchmarks
 const COE = PFTBenchmarks
 using JLD2
 using Plots
-ho = first(values(load("experiments/VDPTag/opt/data/PFTDPW.jld2")))
-h = Hyperoptimizer((getfield(ho, f) for f ∈ propertynames(ho))..., ()->())
-plot(h)
 
-h.maximizer
+PROBLEMS = ["DVDPTag", "LaserTag", "LightDark", "SubHunt", "VDPTag"]
+SOLVERS = ["PFTDPW", "SparsePFT"]
+problem = "SubHunt"
+solver = "SparsePFT"
+ho = first(values(load("experiments/$problem/opt/data/$solver.jld2")))
+h = Hyperoptimizer((getfield(ho, f) for f ∈ propertynames(ho))..., ()->())
+p = plot(h)
+savefig(p, "$(solver)_$(problem)_params.svg")
+
+str = join(["$(lstrip(string(p), '_')), $v" for (p,v) ∈ zip(h.params, h.maximizer)], '\n')
+file_path = joinpath(COE.PROJECT_ROOT, "hyperopt", "$(solver)_$(problem).csv")
+open(file_path, "w") do file
+    write(file, str)
+end
+
+h.maximum
 h.params
 
+for solver ∈ SOLVERS
+    for problem ∈ PROBLEMS
+        ho = first(values(load("experiments/$problem/opt/data/$solver.jld2")))
+        h = Hyperoptimizer((getfield(ho, f) for f ∈ propertynames(ho))..., ()->())
+        str = join(["$(lstrip(string(p), '_')), $v" for (p,v) ∈ zip(h.params, h.maximizer)], '\n')
+        file_path = joinpath(COE.PROJECT_ROOT, "hyperopt", "$(solver)_$(problem).csv")
+        open(file_path, "w") do file
+            write(file, str)
+        end
+    end
+end
+
+join(["$(lstrip(string(p), '_')), $v" for (p,v) ∈ zip(h.params, h.maximizer)], '\n')
+
 for (p,v) ∈ zip(h.params, h.maximizer)
-    println(p,":\t",round(v;sigdigits=3))
+    println(p,", ",round(v;sigdigits=3))
 end
 
 

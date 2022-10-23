@@ -11,6 +11,7 @@ p = addprocs(args["addprocs"]; exeflags="--project")
 @show length(procs())
 
 Distributed.@everywhere begin
+    using PFTBenchmarks
     using POMDPs
     using POMDPTools
     using ParticleFilters
@@ -25,35 +26,33 @@ const PFT = ParticleFilterTrees
 
 using PFTBenchmarks.LightDark
 
-pomdp = LightDark.LightDarkPOMDP()
+const pomdp = LightDark.LightDarkPOMDP()
 VE = FOValue(ValueIterationSolver())
-PO_VE = ParticleFilterTrees.PORollout(QMDPSolver(); n_rollouts=0)
+PO_VE1 = ParticleFilterTrees.PORollout(QMDPSolver(); n_rollouts=2)
+PO_VE2 = ParticleFilterTrees.PORollout(QMDPSolver(); n_rollouts=4)
 
-times = 10.0 .^ (-2:0.25:0)
+times = args["test"] ? [0.1] : 10.0 .^ (-2:0.25:0)
 PFTDPW_params = Dict{Symbol,Any}(
-    :criterion => PFT.MaxUCB(100.0),
-    :k_o => 4.0,
-    :k_a => 4.0,
-    :alpha_o => 1/10,
-    :alpha_a => 0.0,
-    :n_particles => 20,
+    :criterion => PFT.MaxPoly(92.86, inv(3.34)),
+    :k_o => 13.15,
+    :alpha_o => 0.08,
+    :n_particles => 33,
     :max_depth => 20,
     :tree_queries => 100_000,
-    :value_estimator => PO_VE,
+    :value_estimator => PO_VE1,
     :check_repeat_obs => false,
     :enable_action_pw => false
 )
 
 SparsePFT_params = Dict{Symbol,Any}(
-    :criterion => PFT.MaxUCB(100.0),
-    :k_o => 4.0,
-    :k_a => 4.0,
+    :criterion => PFT.MaxPoly(95.43, inv(2.56)),
+    :k_o => 24.16,
     :alpha_o => 1/10,
     :alpha_a => 0.0,
-    :n_particles => 20,
-    :max_depth => 20,
+    :n_particles => 134,
+    :max_depth => 28,
     :tree_queries => 100_000,
-    :value_estimator => PO_VE,
+    :value_estimator => PO_VE2,
     :check_repeat_obs => false,
     :enable_action_pw => false
 )
@@ -96,7 +95,7 @@ solvers = [
 
 updater = BootstrapFilter(pomdp, 10_000)
 max_steps = 30
-N = args["iter"]
+N = args["test"] ? 5 : args["iter"]
 
 bb = BatchBenchmark(pomdp, times, solvers, updater, max_steps, N)
 
