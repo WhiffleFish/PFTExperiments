@@ -1,5 +1,6 @@
-using ContObsExperiments
-const COE = ContObsExperiments
+using PFTPlots
+const PFT = PFTPlots
+using PFTBenchmarks
 using CairoMakie
 
 FONT = "Times New Roman"
@@ -10,35 +11,35 @@ IGNORE = ["POMCP"]
 
 set_theme!(Theme(fontsize=FONTSIZE, font=FONT))
 
-b1 = BenchmarkSummary(COE.latest(LASERTAG_DATA_PATH, "compare"))
-b2 = BenchmarkSummary(COE.latest(LIGHTDARK_DATA_PATH, "compare"))
-b3 = BenchmarkSummary(COE.latest(SUBHUNT_DATA_PATH, "compare"))
-b4 = BenchmarkSummary(COE.latest(VDPTAG_DATA_PATH, "compare"))
-b5 = BenchmarkSummary(COE.latest(DVDPTAG_DATA_PATH, "compare"))
+b1 = BenchmarkSummary(PFT.latest(LASERTAG_DATA_PATH, "compare"))
+b2 = BenchmarkSummary(PFT.latest(LIGHTDARK_DATA_PATH, "compare"))
+b3 = BenchmarkSummary(PFT.latest(SUBHUNT_DATA_PATH, "compare"))
+b4 = BenchmarkSummary(PFT.latest(VDPTAG_DATA_PATH, "compare"))
+b5 = BenchmarkSummary(PFT.latest(DVDPTAG_DATA_PATH, "compare"))
 
 
 size_inches = (8.3, 6.5)
 size_pt = 72 .* size_inches
 begin # This is positively horrific
     f = Figure(resolution = size_pt, fontsize = FONTSIZE)
-    ax1, line_dict = COE.plot_ax!(f[1,1], b1; ignore=IGNORE, legend=false, xlabel="", ylabel=YLABEL, ret_data=true, titlefont=FONT, xticklabelsvisible=false)
-    COE.plot_ax!(f[1,2], b2; ignore=IGNORE, legend=false, xlabel="", ylabel="", titlefont=FONT, xticklabelsvisible=false)
-    COE.plot_ax!(f[1,3], b3; ignore=IGNORE, legend=false, xlabel="", ylabel="", titlefont=FONT)
-    COE.plot_ax!(f[2,1], b4; ignore=IGNORE, legend=false, xlabel="", ylabel=YLABEL, titlefont=FONT)
-    COE.plot_ax!(f[2,2], b5; ignore=IGNORE, legend=false, xlabel="", ylabel="", title="Discrete VDP Tag", limits = (0.01, 1.0, -10, nothing), titlefont=FONT)
+    ax1, line_dict = PFT.plot_ax!(f[1,1], b1; ignore=IGNORE, legend=false, xlabel="", ylabel=YLABEL, ret_data=true, titlefont=FONT, xticklabelsvisible=false)
+    PFT.plot_ax!(f[1,2], b2; ignore=IGNORE, legend=false, xlabel="", ylabel="", titlefont=FONT, xticklabelsvisible=false)
+    PFT.plot_ax!(f[1,3], b3; ignore=IGNORE, legend=false, xlabel="", ylabel="", titlefont=FONT)
+    PFT.plot_ax!(f[2,1], b4; ignore=IGNORE, legend=false, xlabel="", ylabel=YLABEL, titlefont=FONT)
+    PFT.plot_ax!(f[2,2], b5; ignore=IGNORE, legend=false, xlabel="", ylabel="", title="Discrete VDP Tag", limits = (0.01, 1.0, -10, nothing), titlefont=FONT)
     Legend(f[2,3], collect(values(line_dict)), collect(keys(line_dict)))
     for i in 1:3
         ax = Axis(f[3,i])
         hidedecorations!(ax)
         hidespines!(ax)
-        text!(XLABEL, ax, textsize=FONTSIZE, font=FONT, align=(:center,:bottom))
+        # text!(XLABEL, ax, textsize=FONTSIZE, font=FONT, align=(:center,:bottom))
     end
     for i in 1:3; colsize!(f.layout, i, Aspect(1, 1.0)); end
     rowsize!(f.layout, 3, Fixed(30))
     display(f)
 end
 
-save(joinpath(COE.PROJECT_ROOT,"img","all_plots.pdf"), f)
+save(joinpath(PFT.PROJECT_ROOT,"img","all_plots.pdf"), f)
 
 ##
 
@@ -49,19 +50,19 @@ save("figure.pdf", f, pt_per_unit = 1)
 
 
 ##
-f = COE.plot_data(b1, ignore=["POMCP"], ci=2)
+f = PFT.plot_data(b1, ignore=["POMCP"], ci=2)
 save(joinpath(COE.PROJECT_ROOT,"img","LaserTag_2021_07_15.pdf"), f)
 
-f = COE.plot_data(b2, ignore=["POMCP"], ci=2)
+f = PFT.plot_data(b2, ignore=["POMCP"], ci=2)
 save(joinpath(COE.PROJECT_ROOT,"img","LightDark_2021_07_15.pdf"), f)
 
-f = COE.plot_data(b3, ignore=["POMCP"], ci=2)
+f = PFT.plot_data(b3, ignore=["POMCP"], ci=2)
 save(joinpath(COE.PROJECT_ROOT,"img","Subhunt_2021_07_15.pdf"), f)
 
-f = COE.plot_data(b4, ignore=["POMCP"], ci=2)
+f = PFT.plot_data(b4, ignore=["POMCP"], ci=2)
 save(joinpath(COE.PROJECT_ROOT,"img","VDPTag_2021_07_15.pdf"), f)
 
-f = COE.plot_data(b5, ignore=["POMCP"], ci=2)
+f = PFT.plot_data(b5, ignore=["POMCP"], ci=2)
 save(joinpath(COE.PROJECT_ROOT,"img","DVDPTag_2022_04_27.pdf"), f)
 
 ## extra
@@ -114,3 +115,13 @@ m_max = 61.7
 df = COE.latest(COE.DVDPTAG_DATA_PATH, "random") |> CSV.File |> DataFrame
 df.reward |> mean
 std(df.reward) / √length(df.reward)
+
+
+##
+using CSV
+problem = "LightDark"
+fp1 = "/Users/tyler/code/PFTExperiments/experiments/$problem/data/compare_2022_04_08.csv"
+fp2 = "/Users/tyler/code/PFTExperiments/experiments/$problem/data/compare_2022_10_23.csv"
+df = PFT.combinedf(fp1, ("AdaOPS", "POMCPOW"), fp2, ("PFTDPW", "SparsePFT"))
+
+CSV.write("/Users/tyler/code/PFTExperiments/experiments/$problem/data/compare_2022_10_25.csv", df)
