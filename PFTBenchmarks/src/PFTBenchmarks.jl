@@ -17,8 +17,6 @@ export BatchBenchmark, benchmark
 
 include(joinpath("LightDark", "LightDark.jl"))
 
-include("combine.jl")
-
 include("evaluate.jl")
 
 include("argparse.jl")

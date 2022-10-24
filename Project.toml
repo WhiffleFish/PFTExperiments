@@ -1,3 +1,4 @@
 [deps]
+PFTBenchmarks = "f83d2ad9-ebdd-4882-9087-c78dc5199c6f"
 PFTPlots = "bc5d1681-2a20-470e-9d6c-52c2eb3e39a5"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"

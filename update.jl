@@ -1,6 +1,6 @@
 using Pkg
 
-Pkg.active(@__DIR__)
+Pkg.activate(@__DIR__)
 Pkg.update()
 
 Pkg.activate(joinpath(@__DIR__, "PFTPlots"))
