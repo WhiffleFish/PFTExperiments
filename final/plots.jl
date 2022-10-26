@@ -32,14 +32,14 @@ begin # This is positively horrific
         ax = Axis(f[3,i])
         hidedecorations!(ax)
         hidespines!(ax)
-        # text!(XLABEL, ax, textsize=FONTSIZE, font=FONT, align=(:center,:bottom))
+        text!(XLABEL, ax, textsize=FONTSIZE, font=FONT, align=(:center,:bottom))
     end
     for i in 1:3; colsize!(f.layout, i, Aspect(1, 1.0)); end
     rowsize!(f.layout, 3, Fixed(30))
     display(f)
 end
 
-save(joinpath(PFT.PROJECT_ROOT,"img","all_plots.pdf"), f)
+save(joinpath(PFT.PROJECT_ROOT,"img","all_plots.svg"), f)
 
 ##
 
