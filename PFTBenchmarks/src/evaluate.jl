@@ -6,7 +6,7 @@ mutable struct OptParams{T<:Solver, P<:POMDP, UPD<:Updater}
     max_steps::Int
 end
 
-function evaluate(params::OptParams; verbose::Bool=false, kwargs...)
+function evaluate(params::OptParams; ret_stderr::Bool=false, verbose::Bool=false, kwargs...)
     N = params.n
     solver = params.sol_t(;kwargs...)
     planner = solve(solver, params.pomdp)
@@ -25,9 +25,10 @@ function evaluate(params::OptParams; verbose::Bool=false, kwargs...)
         @show μ
         @show σ/√N
     end
-    return μ
+    return ret_stderr ? (μ, σ/√N) : μ
 end
 
+logspace(start, stop, length=50) = exp10.(range(log10(start), stop=log10(stop), length=length))
 #=
 """
 Hyperopt macro stores objective as anonymous function, which breaks save with JLD2
