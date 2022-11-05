@@ -42,7 +42,6 @@ const SparsePFT_params = Dict{Symbol,Any}(
     :k_a => 27.92,
     :alpha_o => 1/10,
     :alpha_a => 0.0,
-    :n_particles => 385,
     :max_depth => 33,
     :check_repeat_obs => false,
     :enable_action_pw => true
@@ -50,7 +49,7 @@ const SparsePFT_params = Dict{Symbol,Any}(
 
 const MAX_PARTICLES = args["test"] ? 50 : 500
 
-particles = round.(Int,logspace(1, MAX_PARTICLES, ITER))
+particles = round.(Int,logspace(1, MAX_PARTICLES, ITER)) |> unique
 vals = zeros(Float64, length(particles))
 std_errs = zeros(Float64, length(particles))
 

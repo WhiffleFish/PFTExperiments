@@ -35,7 +35,6 @@ const SparsePFT_params = Dict{Symbol,Any}(
     :criterion => PFT.MaxPoly(20.24, inv(3.95)),
     :k_o => 27.36,
     :alpha_o => 0.0,
-    :n_particles => 23,
     :max_depth => 19,
     :value_estimator => PO_VE,
     :check_repeat_obs => false,
@@ -50,7 +49,7 @@ params = COE.OptParams(
     20
 )
 
-particles = round.(Int,logspace(1, MAX_PARTICLES, ITER))
+particles = round.(Int,logspace(1, MAX_PARTICLES, ITER)) |> unique
 vals = zeros(Float64, length(particles))
 std_errs = zeros(Float64, length(particles))
 

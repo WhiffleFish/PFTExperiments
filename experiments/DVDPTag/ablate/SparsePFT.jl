@@ -45,7 +45,7 @@ const SparsePFT_params = Dict{Symbol,Any}(
 
 const MAX_PARTICLES = args["test"] ? 50 : 500
 
-particles = round.(Int,logspace(1, MAX_PARTICLES, ITER))
+particles = round.(Int,logspace(1, MAX_PARTICLES, ITER)) |> unique
 vals = zeros(Float64, length(particles))
 std_errs = zeros(Float64, length(particles))
 
