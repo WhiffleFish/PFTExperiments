@@ -42,7 +42,7 @@ const SparsePFT_params = Dict{Symbol,Any}(
 params = COE.OptParams(
     PFTDPWSolver,
     pomdp,
-    args["test"] ? 5 : 250,
+    args["test"] ? 5 : 500,
     DiscreteUpdater(pomdp),
     20
 )

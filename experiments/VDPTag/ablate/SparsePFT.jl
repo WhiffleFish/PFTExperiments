@@ -31,7 +31,7 @@ const TREE_QUERIES = 100
 params = COE.OptParams(
     PFTDPWSolver,
     pomdp,
-    args["test"] ? 5 : 250,
+    args["test"] ? 5 : 500,
     BootstrapFilter(pomdp, 100_000),
     20
 )
