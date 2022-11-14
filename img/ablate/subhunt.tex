@@ -1,0 +1,139 @@
+% Recommended preamble:
+% \usetikzlibrary{arrows.meta}
+% \usetikzlibrary{backgrounds}
+% \usepgfplotslibrary{patchplots}
+% \usepgfplotslibrary{fillbetween}
+% \pgfplotsset{%
+%     layers/standard/.define layer set={%
+%         background,axis background,axis grid,axis ticks,axis lines,axis tick labels,pre main,main,axis descriptions,axis foreground%
+%     }{
+%         grid style={/pgfplots/on layer=axis grid},%
+%         tick style={/pgfplots/on layer=axis ticks},%
+%         axis line style={/pgfplots/on layer=axis lines},%
+%         label style={/pgfplots/on layer=axis descriptions},%
+%         legend style={/pgfplots/on layer=axis descriptions},%
+%         title style={/pgfplots/on layer=axis descriptions},%
+%         colorbar style={/pgfplots/on layer=axis descriptions},%
+%         ticklabel style={/pgfplots/on layer=axis tick labels},%
+%         axis background@ style={/pgfplots/on layer=axis background},%
+%         3d box foreground style={/pgfplots/on layer=axis foreground},%
+%     },
+% }
+
+\begin{tikzpicture}[/tikz/background rectangle/.style={fill={rgb,1:red,1.0;green,1.0;blue,1.0}, draw opacity={1.0}}, show background rectangle]
+\begin{axis}[point meta max={nan}, point meta min={nan}, legend cell align={left}, legend columns={1}, title={SubHunt}, title style={at={{(0.5,1)}}, anchor={south}, font={{\fontsize{14 pt}{18.2 pt}\selectfont}}, color={rgb,1:red,0.0;green,0.0;blue,0.0}, draw opacity={1.0}, rotate={0.0}, align={center}}, legend style={color={rgb,1:red,0.0;green,0.0;blue,0.0}, draw opacity={1.0}, line width={1}, solid, fill={rgb,1:red,1.0;green,1.0;blue,1.0}, fill opacity={1.0}, text opacity={1.0}, font={{\fontsize{8 pt}{10.4 pt}\selectfont}}, text={rgb,1:red,0.0;green,0.0;blue,0.0}, cells={anchor={center}}, at={(1.02, 1)}, anchor={north west}}, axis background/.style={fill={rgb,1:red,1.0;green,1.0;blue,1.0}, opacity={1.0}}, anchor={north west}, xshift={1.0mm}, yshift={-1.0mm}, width={145.4mm}, height={99.6mm}, scaled x ticks={false}, xlabel={Particle Count}, x tick style={color={rgb,1:red,0.0;green,0.0;blue,0.0}, opacity={1.0}}, x tick label style={color={rgb,1:red,0.0;green,0.0;blue,0.0}, opacity={1.0}, rotate={0}}, xlabel style={at={(ticklabel cs:0.5)}, anchor=near ticklabel, at={{(ticklabel cs:0.5)}}, anchor={near ticklabel}, font={{\fontsize{11 pt}{14.3 pt}\selectfont}}, color={rgb,1:red,0.0;green,0.0;blue,0.0}, draw opacity={1.0}, rotate={0.0}}, xmode={log}, log basis x={10}, xmajorgrids={true}, xmin={0.8299098131483817}, xmax={602.4751028104829}, xticklabels={{$1$,$10$,$100$}}, xtick={{1.0,10.0,100.0}}, xtick align={inside}, xticklabel style={font={{\fontsize{8 pt}{10.4 pt}\selectfont}}, color={rgb,1:red,0.0;green,0.0;blue,0.0}, draw opacity={1.0}, rotate={0.0}}, x grid style={color={rgb,1:red,0.0;green,0.0;blue,0.0}, draw opacity={0.1}, line width={0.5}, solid}, axis x line*={left}, x axis line style={color={rgb,1:red,0.0;green,0.0;blue,0.0}, draw opacity={1.0}, line width={1}, solid}, scaled y ticks={false}, ylabel={Reward}, y tick style={color={rgb,1:red,0.0;green,0.0;blue,0.0}, opacity={1.0}}, y tick label style={color={rgb,1:red,0.0;green,0.0;blue,0.0}, opacity={1.0}, rotate={0}}, ylabel style={at={(ticklabel cs:0.5)}, anchor=near ticklabel, at={{(ticklabel cs:0.5)}}, anchor={near ticklabel}, font={{\fontsize{11 pt}{14.3 pt}\selectfont}}, color={rgb,1:red,0.0;green,0.0;blue,0.0}, draw opacity={1.0}, rotate={0.0}}, ymajorgrids={true}, ymin={0.16928619938168765}, ymax={91.86574978498554}, yticklabels={{$20$,$40$,$60$,$80$}}, ytick={{20.0,40.0,60.0,80.0}}, ytick align={inside}, yticklabel style={font={{\fontsize{8 pt}{10.4 pt}\selectfont}}, color={rgb,1:red,0.0;green,0.0;blue,0.0}, draw opacity={1.0}, rotate={0.0}}, y grid style={color={rgb,1:red,0.0;green,0.0;blue,0.0}, draw opacity={0.1}, line width={0.5}, solid}, axis y line*={left}, y axis line style={color={rgb,1:red,0.0;green,0.0;blue,0.0}, draw opacity={1.0}, line width={1}, solid}, colorbar={false}]
+    \addplot+[line width={0}, draw opacity={0}, fill={rgb,1:red,0.0;green,0.6056;blue,0.9787}, fill opacity={0.5}, mark={none}, forget plot]
+        coordinates {
+            (1.0,5.549592961016846)
+            (2.0,66.49458839850631)
+            (3.0,84.00623355650804)
+            (4.0,78.14249951389036)
+            (5.0,80.82716908541187)
+            (7.0,81.84268027573401)
+            (10.0,82.12524911174054)
+            (14.0,83.5105867690878)
+            (19.0,84.2346194634784)
+            (26.0,83.91927174875858)
+            (37.0,84.91884464821398)
+            (51.0,82.30584379803283)
+            (70.0,84.05572175484775)
+            (97.0,83.5738419810195)
+            (135.0,83.43962229716722)
+            (187.0,84.21538892849722)
+            (260.0,83.79811110100903)
+            (361.0,86.12834557738778)
+            (500.0,84.18822641907933)
+            (500.0,80.70111692936467)
+            (361.0,82.98612430145805)
+            (260.0,80.24747833127742)
+            (187.0,80.80696821092772)
+            (135.0,79.82679003969497)
+            (97.0,79.95699012827107)
+            (70.0,80.57321713214246)
+            (51.0,78.51917989601348)
+            (37.0,81.56363915694963)
+            (26.0,80.3645573302549)
+            (19.0,80.74655384440523)
+            (14.0,79.89476675192599)
+            (10.0,78.27190516305222)
+            (7.0,77.93185932597311)
+            (5.0,76.75444274949086)
+            (4.0,73.74927700743848)
+            (3.0,80.44752190445165)
+            (2.0,61.1292072417104)
+            (1.0,2.7644691310497236)
+            (1.0,5.549592961016846)
+        }
+        ;
+    \addplot+[line width={0}, draw opacity={0}, fill={rgb,1:red,0.0;green,0.6056;blue,0.9787}, fill opacity={0.5}, mark={none}, forget plot]
+        coordinates {
+            (1.0,5.549592961016846)
+            (2.0,66.49458839850631)
+            (3.0,84.00623355650804)
+            (4.0,78.14249951389036)
+            (5.0,80.82716908541187)
+            (7.0,81.84268027573401)
+            (10.0,82.12524911174054)
+            (14.0,83.5105867690878)
+            (19.0,84.2346194634784)
+            (26.0,83.91927174875858)
+            (37.0,84.91884464821398)
+            (51.0,82.30584379803283)
+            (70.0,84.05572175484775)
+            (97.0,83.5738419810195)
+            (135.0,83.43962229716722)
+            (187.0,84.21538892849722)
+            (260.0,83.79811110100903)
+            (361.0,86.12834557738778)
+            (500.0,84.18822641907933)
+            (500.0,87.67533590879398)
+            (361.0,89.2705668533175)
+            (260.0,87.34874387074063)
+            (187.0,87.62380964606672)
+            (135.0,87.05245455463947)
+            (97.0,87.19069383376792)
+            (70.0,87.53822637755304)
+            (51.0,86.09250770005217)
+            (37.0,88.27405013947832)
+            (26.0,87.47398616726225)
+            (19.0,87.72268508255156)
+            (14.0,87.1264067862496)
+            (10.0,85.97859306042886)
+            (7.0,85.75350122549492)
+            (5.0,84.89989542133287)
+            (4.0,82.53572202034223)
+            (3.0,87.56494520856442)
+            (2.0,71.85996955530221)
+            (1.0,8.334716790983968)
+            (1.0,5.549592961016846)
+        }
+        ;
+    \addplot[color={rgb,1:red,0.0;green,0.6056;blue,0.9787}, name path={f43e4166-9bb1-4feb-91ac-b6770bbd05e6}, legend image code/.code={{
+    \draw[fill={rgb,1:red,0.0;green,0.6056;blue,0.9787}, fill opacity={0.5}] (0cm,-0.1cm) rectangle (0.6cm,0.1cm);
+    }}, draw opacity={1.0}, line width={1}, solid, forget plot]
+        table[row sep={\\}]
+        {
+            \\
+            1.0  5.549592961016846  \\
+            2.0  66.49458839850631  \\
+            3.0  84.00623355650804  \\
+            4.0  78.14249951389036  \\
+            5.0  80.82716908541187  \\
+            7.0  81.84268027573401  \\
+            10.0  82.12524911174054  \\
+            14.0  83.5105867690878  \\
+            19.0  84.2346194634784  \\
+            26.0  83.91927174875858  \\
+            37.0  84.91884464821398  \\
+            51.0  82.30584379803283  \\
+            70.0  84.05572175484775  \\
+            97.0  83.5738419810195  \\
+            135.0  83.43962229716722  \\
+            187.0  84.21538892849722  \\
+            260.0  83.79811110100903  \\
+            361.0  86.12834557738778  \\
+            500.0  84.18822641907933  \\
+        }
+        ;
+\end{axis}
+\end{tikzpicture}
